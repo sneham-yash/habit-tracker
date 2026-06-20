@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { SettingsIcon } from "lucide-react";
 import { useState } from "react";
 
 import { AvatarEditor } from "@/components/profile/avatar-editor";
@@ -80,9 +82,17 @@ export function ProfilePage({
         </CardContent>
       </Card>
 
-      <Button className="w-full" onClick={() => setEditOpen(true)}>
-        Edit Profile
-      </Button>
+      <div className="grid gap-2">
+        <Button className="w-full" onClick={() => setEditOpen(true)}>
+          Edit Profile
+        </Button>
+        <Button variant="outline" className="w-full" asChild>
+          <Link href="/settings">
+            <SettingsIcon />
+            Settings
+          </Link>
+        </Button>
+      </div>
 
       <EditProfileDialog
         open={editOpen}
