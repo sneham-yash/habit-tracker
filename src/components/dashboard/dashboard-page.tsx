@@ -126,6 +126,9 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
         <>
           <RizenHeroCard
             rizenScore={todayRizenScore}
+            transformation={insightsData?.insights.transformation ?? 0}
+            currentStreak={insightsData?.insights.currentStreak ?? 0}
+            stepsForward={insightsData?.insights.stepsForward ?? 0}
             completedCount={completedCount}
             totalCount={totalCount || allToday.length}
           />

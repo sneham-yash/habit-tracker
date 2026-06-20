@@ -6,7 +6,9 @@ import {
   CardContent,
   CardHeader,
 } from "@/components/ui/card";
+import { RizenScoreTrendChart } from "@/components/insights/rizen-score-trend-chart";
 import { useInsights } from "@/hooks/use-insights";
+import { formatTransformation } from "@/lib/analytics/rizen-score";
 import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
@@ -84,11 +86,20 @@ export function InsightsPage() {
           <MetricCard
             title="Rizen Score"
             value={data.insights.rizenScore}
-            description="Your overall transformation score (0–100)"
+            description="Recent performance over the last 30 days (0–100)"
             prominent
           />
 
           <div className="grid grid-cols-2 gap-3">
+            <MetricCard
+              title="Transformation"
+              value={formatTransformation(data.insights.transformation)}
+              description="Compared to last month"
+            />
+            <MetricCard
+              title="Steps Forward"
+              value={data.insights.stepsForward}
+            />
             <MetricCard
               title="Current Streak"
               value={`${data.insights.currentStreak} days`}
@@ -96,10 +107,6 @@ export function InsightsPage() {
             <MetricCard
               title="Completion Rate"
               value={`${data.insights.completionRate}%`}
-            />
-            <MetricCard
-              title="Steps Forward"
-              value={data.insights.stepsForward}
             />
             <MetricCard
               title="Build Score"
@@ -113,15 +120,6 @@ export function InsightsPage() {
 
           <div className="space-y-3">
             <MetricCard
-              title="Favorite Habit"
-              value={data.insights.favoriteHabitName ?? "—"}
-              description={
-                data.insights.favoriteHabitName
-                  ? "Your most consistent habit"
-                  : "Complete habits to unlock insights"
-              }
-            />
-            <MetricCard
               title="Strongest Category"
               value={data.insights.strongestCategoryName ?? "—"}
             />
@@ -131,6 +129,8 @@ export function InsightsPage() {
               description="A category where small steps can help most"
             />
           </div>
+
+          <RizenScoreTrendChart data={data.scoreTrend} />
         </>
       )}
     </div>

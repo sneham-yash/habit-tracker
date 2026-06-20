@@ -1,10 +1,19 @@
+import { FlameIcon, FootprintsIcon, TrendingDownIcon, TrendingUpIcon } from "lucide-react";
+
 import { APP_TAGLINE } from "@/constants/brand";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  formatStreakDays,
+  formatTransformation,
+} from "@/lib/analytics/rizen-score";
 import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
 type RizenHeroCardProps = {
   rizenScore: number;
+  transformation: number;
+  currentStreak: number;
+  stepsForward: number;
   completedCount: number;
   totalCount: number;
 };
@@ -46,8 +55,21 @@ function ScoreRing({ score }: { score: number }) {
   );
 }
 
+function TransformationIcon({ value }: { value: number }) {
+  if (value > 0) {
+    return <TrendingUpIcon className="size-3.5 shrink-0 text-primary" aria-hidden />;
+  }
+  if (value < 0) {
+    return <TrendingDownIcon className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />;
+  }
+  return null;
+}
+
 export function RizenHeroCard({
   rizenScore,
+  transformation,
+  currentStreak,
+  stepsForward,
   completedCount,
   totalCount,
 }: RizenHeroCardProps) {
@@ -57,14 +79,53 @@ export function RizenHeroCard({
   return (
     <Card className="border-primary/20 bg-gradient-to-br from-primary/10 via-background to-background py-5">
       <CardContent className="space-y-5">
-        <div className="space-y-4">
+        <div className="space-y-1">
           <p className={typography.metricLabel}>Rizen Score</p>
-          <div className="flex items-center gap-5">
-            <ScoreRing score={rizenScore} />
+          <p className={typography.bodyMuted}>Recent Performance</p>
+        </div>
+
+        <div className="flex items-start gap-5">
+          <ScoreRing score={rizenScore} />
+
+          <div className="min-w-0 flex-1 space-y-4 pt-1">
+            <div className="space-y-1">
+              <h2 className={typography.sectionTitle}>Rizen Score</h2>
+              <p className={cn(typography.bodyText, "text-primary font-medium")}>
+                {APP_TAGLINE}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-0.5">
+                <p className={typography.metricLabel}>Transformation</p>
+                <div className="flex items-center gap-1.5">
+                  <TransformationIcon value={transformation} />
+                  <p className={typography.metricValueSm}>
+                    {formatTransformation(transformation)}
+                  </p>
+                </div>
+                <p className={typography.bodyMuted}>vs last month</p>
+              </div>
+
+              <div className="space-y-0.5">
+                <p className={typography.metricLabel}>Current Streak</p>
+                <div className="flex items-center gap-1.5">
+                  <FlameIcon className="size-4 shrink-0 text-primary" aria-hidden />
+                  <p className={typography.metricValueSm}>
+                    {formatStreakDays(currentStreak)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-0.5">
+                <p className={typography.metricLabel}>Steps Forward</p>
+                <div className="flex items-center gap-1.5">
+                  <FootprintsIcon className="size-4 shrink-0 text-primary" aria-hidden />
+                  <p className={typography.metricValueSm}>{stepsForward}</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className={cn(typography.bodyText, "text-primary font-medium")}>
-            {APP_TAGLINE}
-          </p>
         </div>
 
         <div className="space-y-3 border-t border-border/60 pt-4">

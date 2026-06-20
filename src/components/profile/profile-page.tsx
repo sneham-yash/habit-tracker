@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { useInsights } from "@/hooks/use-insights";
 import { formatDisplayName, typography } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 
 type ProfilePageProps = {
   email: string;
@@ -52,25 +53,30 @@ export function ProfilePage({
           <CardDescription>{email}</CardDescription>
           <CardTitle className="text-base">Member since {memberSince}</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-3 gap-3 text-center">
-          <div className="space-y-1">
-            <p className={typography.metricValueSm}>
-              {insightsData?.insights.rizenScore ?? 0}
-            </p>
-            <p className={typography.metricLabel}>Rizen Score</p>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="space-y-1">
+              <p className={typography.metricValueSm}>
+                {insightsData?.insights.rizenScore ?? 0}
+              </p>
+              <p className={typography.metricLabel}>Current Rizen Score</p>
+            </div>
+            <div className="space-y-1">
+              <p className={typography.metricValueSm}>
+                {insightsData?.insights.longestStreak ?? 0}
+              </p>
+              <p className={typography.metricLabel}>Longest Streak</p>
+            </div>
+            <div className="space-y-1">
+              <p className={typography.metricValueSm}>
+                {insightsData?.insights.stepsForward ?? 0}
+              </p>
+              <p className={typography.metricLabel}>Steps Forward</p>
+            </div>
           </div>
-          <div className="space-y-1">
-            <p className={typography.metricValueSm}>
-              {insightsData?.insights.longestStreak ?? 0}
-            </p>
-            <p className={typography.metricLabel}>Longest Streak</p>
-          </div>
-          <div className="space-y-1">
-            <p className={typography.metricValueSm}>
-              {insightsData?.insights.stepsForward ?? 0}
-            </p>
-            <p className={typography.metricLabel}>Steps Forward</p>
-          </div>
+          <p className={cn(typography.bodyMuted, "text-center")}>
+            Recent performance over the last 30 days
+          </p>
         </CardContent>
       </Card>
 

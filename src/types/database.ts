@@ -248,6 +248,20 @@ export type Database = {
           needs_attention_category_name: string | null;
         }[];
       };
+      get_rizen_score_trend: {
+        Args: {
+          p_user_id?: string;
+          p_days?: number;
+        };
+        Returns: {
+          score_date: string;
+          completion_rate: number;
+          current_streak: number;
+          build_success_rate: number;
+          quit_success_rate: number;
+          growth_trend: number;
+        }[];
+      };
     };
     Enums: {
       habit_frequency: HabitFrequency;

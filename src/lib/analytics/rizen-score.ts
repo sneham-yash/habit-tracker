@@ -62,6 +62,7 @@ export type RizenMetricsRow = {
 
 export type RizenInsights = {
   rizenScore: number;
+  transformation: number;
   currentStreak: number;
   completionRate: number;
   stepsForward: number;
@@ -72,6 +73,44 @@ export type RizenInsights = {
   strongestCategoryName: string | null;
   needsAttentionCategoryName: string | null;
 };
+
+export type RizenScoreTrendRow = {
+  score_date: string;
+  completion_rate: number;
+  current_streak: number;
+  build_success_rate: number;
+  quit_success_rate: number;
+  growth_trend: number;
+};
+
+export type RizenScoreTrendPoint = {
+  date: string;
+  score: number;
+};
+
+export function formatTransformation(value: number): string {
+  const rounded = Math.round(value * 10) / 10;
+  if (rounded > 0) return `+${rounded}%`;
+  if (rounded < 0) return `${rounded}%`;
+  return "0%";
+}
+
+export function formatStreakDays(streak: number): string {
+  return `${streak} ${streak === 1 ? "Day" : "Days"}`;
+}
+
+export function mapTrendRowToScore(row: RizenScoreTrendRow): RizenScoreTrendPoint {
+  return {
+    date: row.score_date,
+    score: calculateRizenScore({
+      completionRate: row.completion_rate,
+      currentStreak: row.current_streak,
+      buildSuccessRate: row.build_success_rate,
+      quitSuccessRate: row.quit_success_rate,
+      growthTrend: row.growth_trend,
+    }),
+  };
+}
 
 export function mapMetricsToInsights(
   metrics: RizenMetricsRow,
@@ -84,6 +123,7 @@ export function mapMetricsToInsights(
       quitSuccessRate: metrics.quit_success_rate,
       growthTrend: metrics.growth_trend,
     }),
+    transformation: Math.round(metrics.growth_trend * 100 * 10) / 10,
     currentStreak: metrics.current_streak,
     completionRate: metrics.completion_rate,
     stepsForward: metrics.steps_forward,
