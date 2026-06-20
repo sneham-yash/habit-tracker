@@ -10,9 +10,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { CATEGORY_TYPE_LABELS } from "@/constants/habits";
 import {
@@ -26,6 +24,8 @@ import {
   useToggleHabitCompletion,
 } from "@/hooks/use-dashboard";
 import { calculateRizenScore } from "@/lib/analytics/rizen-score";
+import { typography } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
@@ -77,7 +77,7 @@ export function CategoryDetailPage({ categoryId }: CategoryDetailPageProps) {
   }
 
   if (categoryLoading) {
-    return <p className="text-muted-foreground text-sm">Loading category…</p>;
+    return <p className={typography.bodyMuted}>Loading category…</p>;
   }
 
   if (!category) {
@@ -103,7 +103,9 @@ export function CategoryDetailPage({ categoryId }: CategoryDetailPageProps) {
             />
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="truncate text-2xl font-bold">{category.name}</h1>
+                <h1 className={cn(typography.screenTitle, "truncate")}>
+                  {category.name}
+                </h1>
                 <Badge
                   variant={
                     category.category_type === "build" ? "default" : "secondary"
@@ -112,7 +114,7 @@ export function CategoryDetailPage({ categoryId }: CategoryDetailPageProps) {
                   {CATEGORY_TYPE_LABELS[category.category_type]}
                 </Badge>
               </div>
-              <p className="text-muted-foreground text-sm">
+              <p className={typography.bodyMuted}>
                 {analytics?.habit_count ?? habits?.length ?? 0} habits
               </p>
             </div>
@@ -122,16 +124,16 @@ export function CategoryDetailPage({ categoryId }: CategoryDetailPageProps) {
 
       <Card className="border-primary/20">
         <CardHeader>
-          <CardDescription>Category score</CardDescription>
-          <CardTitle className="text-3xl">
+          <p className={typography.metricLabel}>Category Score</p>
+          <p className={typography.metricValue}>
             {analyticsLoading ? "…" : categoryScore}
-            <span className="text-muted-foreground ml-2 text-base font-normal">
+            <span className={cn(typography.bodyMuted, "ml-2 text-base font-normal")}>
               / 100
             </span>
-          </CardTitle>
+          </p>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-sm">
+          <p className={typography.bodyMuted}>
             {analytics
               ? `${Math.round(analytics.completion_rate)}% completion over the last 30 days`
               : "Complete habits to build your score"}
@@ -147,7 +149,7 @@ export function CategoryDetailPage({ categoryId }: CategoryDetailPageProps) {
           showSectionTitle={false}
         />
       ) : (
-        <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
+        <div className={cn("rounded-xl border border-dashed p-6 text-center", typography.bodyMuted)}>
           No habits due today in this category.
         </div>
       )}

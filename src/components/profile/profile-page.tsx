@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 
 import { signOut } from "@/app/(auth)/actions";
-import { APP_NAME, APP_TAGLINE } from "@/constants/brand";
+import { APP_TAGLINE } from "@/constants/brand";
 import { ThemeToggle } from "@/components/profile/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useInsights } from "@/hooks/use-insights";
+import { formatDisplayName, typography } from "@/lib/typography";
 
 type ProfilePageProps = {
   email: string;
@@ -29,17 +30,15 @@ export function ProfilePage({
 }: ProfilePageProps) {
   const { data: insightsData } = useInsights();
   const { theme } = useTheme();
+  const nameLabel = displayName
+    ? formatDisplayName(displayName)
+    : "Your Profile";
 
   return (
     <div className="space-y-6">
       <div className="space-y-1 text-center">
-        <p className="text-primary text-sm font-semibold tracking-wide uppercase">
-          {APP_NAME}
-        </p>
-        <h1 className="text-2xl font-bold tracking-tight">
-          {displayName ?? "Your profile"}
-        </h1>
-        <p className="text-muted-foreground text-sm">{APP_TAGLINE}</p>
+        <h1 className={typography.screenTitle}>{nameLabel}</h1>
+        <p className={typography.screenSubtitle}>{APP_TAGLINE}</p>
       </div>
 
       <Card>
@@ -48,17 +47,23 @@ export function ProfilePage({
           <CardTitle className="text-base">Member since {memberSince}</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-3 gap-3 text-center">
-          <div>
-            <p className="text-2xl font-bold">{insightsData?.insights.rizenScore ?? 0}</p>
-            <p className="text-muted-foreground text-xs">Rizen Score</p>
+          <div className="space-y-1">
+            <p className={typography.metricValueSm}>
+              {insightsData?.insights.rizenScore ?? 0}
+            </p>
+            <p className={typography.metricLabel}>Rizen Score</p>
           </div>
-          <div>
-            <p className="text-2xl font-bold">{insightsData?.insights.longestStreak ?? 0}</p>
-            <p className="text-muted-foreground text-xs">Longest Streak</p>
+          <div className="space-y-1">
+            <p className={typography.metricValueSm}>
+              {insightsData?.insights.longestStreak ?? 0}
+            </p>
+            <p className={typography.metricLabel}>Longest Streak</p>
           </div>
-          <div>
-            <p className="text-2xl font-bold">{insightsData?.insights.stepsForward ?? 0}</p>
-            <p className="text-muted-foreground text-xs">Steps Forward</p>
+          <div className="space-y-1">
+            <p className={typography.metricValueSm}>
+              {insightsData?.insights.stepsForward ?? 0}
+            </p>
+            <p className={typography.metricLabel}>Steps Forward</p>
           </div>
         </CardContent>
       </Card>
@@ -69,10 +74,10 @@ export function ProfilePage({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm">Theme</span>
+            <span className={typography.bodyText}>Theme</span>
             <ThemeToggle />
           </div>
-          <p className="text-muted-foreground text-xs">
+          <p className={typography.bodyMuted}>
             Current: {theme ?? "system"}
           </p>
           <Button variant="outline" asChild className="w-full">

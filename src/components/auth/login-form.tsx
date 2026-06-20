@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { typography } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 
 const initialState: AuthActionState = {};
 
@@ -43,8 +45,8 @@ export function LoginForm({ errorMessage }: { errorMessage?: string }) {
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card text-muted-foreground px-2">
+          <div className="relative flex justify-center font-sans text-xs uppercase tracking-wide">
+            <span className={cn(typography.bodyMuted, "bg-card px-2")}>
               Or continue with email
             </span>
           </div>
@@ -85,7 +87,7 @@ export function LoginForm({ errorMessage }: { errorMessage?: string }) {
         </form>
       </CardContent>
       <CardFooter className="justify-center">
-        <p className="text-muted-foreground text-sm">
+        <p className={typography.bodyMuted}>
           Don&apos;t have an account?{" "}
           <Link href="/signup" className="text-primary underline-offset-4 hover:underline">
             Sign up

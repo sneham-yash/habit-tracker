@@ -5,6 +5,7 @@ import { XIcon } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { typography } from "@/lib/typography";
 
 function Dialog({
   ...props
@@ -102,7 +103,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn("text-lg leading-none font-semibold", className)}
+      className={cn(typography.dialogTitle, className)}
       {...props}
     />
   );
@@ -115,7 +116,7 @@ function DialogDescription({
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn("font-sans text-muted-foreground text-sm", className)}
       {...props}
     />
   );

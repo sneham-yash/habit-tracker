@@ -10,6 +10,7 @@ import {
   UserIcon,
 } from "lucide-react";
 
+import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -39,7 +40,8 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2 text-[10px] font-medium transition-colors",
+                typography.navLabel,
+                "flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2 transition-colors",
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground",

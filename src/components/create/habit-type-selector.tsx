@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { HabitType } from "@/types/database";
+import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 
@@ -25,7 +26,7 @@ export function HabitTypeSelector({
 }: HabitTypeSelectorProps) {
   return (
     <div className="space-y-4">
-      <p className="text-muted-foreground text-sm">
+      <p className={typography.bodyMuted}>
         Choose the kind of transformation you want to track.
       </p>
 

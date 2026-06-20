@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatFrequencyLabel } from "@/lib/habits/constants";
+import { typography } from "@/lib/typography";
 import type { Habit } from "@/types/database";
 
 type HabitListProps = {
@@ -39,7 +40,7 @@ export function HabitList({ habits, onEdit, onDelete }: HabitListProps) {
                 <div className="min-w-0 space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <CardTitle className="truncate">{habit.name}</CardTitle>
-                    <Badge variant="secondary" className="text-[10px]">
+                    <Badge variant="secondary" className="text-xs">
                       {habitType === "build" ? "Build" : "Quit"}
                     </Badge>
                   </div>
@@ -73,7 +74,7 @@ export function HabitList({ habits, onEdit, onDelete }: HabitListProps) {
               <Badge variant="secondary">
                 {formatFrequencyLabel(habit.frequency, habit.frequency_days)}
               </Badge>
-              <span className="text-muted-foreground text-sm">
+              <span className={typography.bodyMuted}>
                 Started {habit.start_date}
               </span>
             </CardContent>

@@ -1,11 +1,7 @@
 import { APP_TAGLINE } from "@/constants/brand";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { typography } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 
 type RizenHeroCardProps = {
   rizenScore: number;
@@ -19,8 +15,8 @@ function ScoreRing({ score }: { score: number }) {
   const offset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="relative size-24 shrink-0">
-      <svg className="size-24 -rotate-90" viewBox="0 0 96 96" aria-hidden>
+    <div className="relative size-28 shrink-0">
+      <svg className="size-28 -rotate-90" viewBox="0 0 96 96" aria-hidden>
         <circle
           cx="48"
           cy="48"
@@ -43,8 +39,8 @@ function ScoreRing({ score }: { score: number }) {
           className="text-primary transition-all duration-500"
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold">{score}</span>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className={typography.metricValue}>{score}</span>
       </div>
     </div>
   );
@@ -59,39 +55,40 @@ export function RizenHeroCard({
     totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-primary/10 via-background to-background">
-      <CardHeader className="pb-2">
-        <CardDescription className="text-primary font-medium">
-          {APP_TAGLINE}
-        </CardDescription>
-        <div className="flex items-center gap-4">
-          <ScoreRing score={rizenScore} />
-          <div>
-            <CardTitle className="text-lg">Rizen Score</CardTitle>
-            <p className="text-muted-foreground text-sm">
-              One step closer every day
-            </p>
+    <Card className="border-primary/20 bg-gradient-to-br from-primary/10 via-background to-background py-5">
+      <CardContent className="space-y-5">
+        <div className="space-y-4">
+          <p className={typography.metricLabel}>Rizen Score</p>
+          <div className="flex items-center gap-5">
+            <ScoreRing score={rizenScore} />
           </div>
+          <p className={cn(typography.bodyText, "text-primary font-medium")}>
+            {APP_TAGLINE}
+          </p>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Today&apos;s progress</span>
-          <span className="font-medium">
-            {completedCount}/{totalCount} · {percentage}%
-          </span>
-        </div>
-        <div
-          className="bg-muted h-2 w-full overflow-hidden rounded-full"
-          role="progressbar"
-          aria-valuenow={percentage}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
+
+        <div className="space-y-3 border-t border-border/60 pt-4">
+          <h2 className={typography.sectionTitle}>Today&apos;s Progress</h2>
+          <p className={typography.bodyText}>
+            <span className="font-medium">
+              {completedCount} / {totalCount} Completed
+            </span>
+            <span className={cn(typography.bodyMuted, "ml-2")}>
+              · {percentage}%
+            </span>
+          </p>
           <div
-            className="bg-primary h-full rounded-full transition-all duration-300"
-            style={{ width: `${percentage}%` }}
-          />
+            className="bg-muted h-2 w-full overflow-hidden rounded-full"
+            role="progressbar"
+            aria-valuenow={percentage}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div
+              className="bg-primary h-full rounded-full transition-all duration-300"
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
         </div>
       </CardContent>
     </Card>

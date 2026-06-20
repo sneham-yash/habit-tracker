@@ -5,6 +5,7 @@ import {
   ICON_TONE_CLASSES,
   type IconName,
 } from "@/constants/icons";
+import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
 type IconPickerProps = {
@@ -16,7 +17,7 @@ type IconPickerProps = {
 export function IconPicker({ value, onChange, label = "Choose icon" }: IconPickerProps) {
   return (
     <div className="space-y-2">
-      <p className="text-sm font-medium">{label}</p>
+      <p className={typography.formLabel}>{label}</p>
       <div className="grid grid-cols-4 gap-2">
         {ICON_PICKER_OPTIONS.map((option) => {
           const isSelected = value === option.name;

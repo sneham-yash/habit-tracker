@@ -5,10 +5,7 @@ import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { HabitFilterTabs } from "@/components/dashboard/habit-filter-tabs";
-import {
-  getHomeGreeting,
-  HomeHeader,
-} from "@/components/dashboard/home-header";
+import { HomeHeader } from "@/components/dashboard/home-header";
 import { RizenHeroCard } from "@/components/dashboard/rizen-hero-card";
 import { TodayHabitList } from "@/components/dashboard/today-habit-list";
 import { WeekCalendarStrip } from "@/components/dashboard/week-calendar-strip";
@@ -16,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import type { HabitFilterTab } from "@/constants/habits";
 import { calculateRizenScore } from "@/lib/analytics/rizen-score";
 import { formatTodayLabel } from "@/lib/dates";
+import { typography } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 import { useInsights } from "@/hooks/use-insights";
 import { useHabits } from "@/hooks/use-habits";
 import {
@@ -57,6 +56,16 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
   const totalCount = filteredHabits.length;
   const hasAnyHabits = (allHabits?.length ?? 0) > 0;
 
+  const tabCounts = useMemo(() => {
+    const build = allToday.filter((h) => (h.habit_type ?? "build") === "build");
+    const quit = allToday.filter((h) => h.habit_type === "quit");
+    return {
+      all: allToday.length,
+      build: build.length,
+      quit: quit.length,
+    } satisfies Record<HabitFilterTab, number>;
+  }, [allToday]);
+
   const todayRizenScore = useMemo(() => {
     if (insightsData?.insights) return insightsData.insights.rizenScore;
     const build = allToday.filter((h) => (h.habit_type ?? "build") === "build");
@@ -94,7 +103,7 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
   return (
     <div className="space-y-6">
       <HomeHeader
-        greeting={getHomeGreeting(displayName)}
+        displayName={displayName}
         dateLabel={formatTodayLabel(selectedDate)}
       />
 
@@ -120,14 +129,18 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
             completedCount={completedCount}
             totalCount={totalCount || allToday.length}
           />
-          <HabitFilterTabs value={homeTab} onChange={setHomeTab} />
+          <HabitFilterTabs
+            value={homeTab}
+            onChange={setHomeTab}
+            counts={tabCounts}
+          />
         </>
       ) : null}
 
       {!isLoading && !habitsLoading && !error && !hasAnyHabits ? (
         <div className="rounded-xl border border-dashed p-8 text-center">
-          <p className="font-medium">One step starts here</p>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <p className={typography.bodyText}>One step starts here</p>
+          <p className={cn(typography.bodyMuted, "mt-1")}>
             Create your first habit to begin your transformation.
           </p>
           <Button className="mt-4" asChild>
@@ -141,8 +154,8 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
 
       {!isLoading && !habitsLoading && !error && hasAnyHabits && totalCount === 0 ? (
         <div className="rounded-xl border border-dashed p-8 text-center">
-          <p className="font-medium">Nothing in this view today</p>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <p className={typography.bodyText}>Nothing in this view today</p>
+          <p className={cn(typography.bodyMuted, "mt-1")}>
             No {homeTab === "all" ? "" : `${homeTab} `}habits scheduled for today.
           </p>
         </div>

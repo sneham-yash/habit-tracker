@@ -4,29 +4,37 @@ import { APP_TAGLINE } from "@/constants/brand";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { useInsights } from "@/hooks/use-insights";
+import { typography } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 
 function MetricCard({
   title,
   value,
   description,
+  prominent = false,
 }: {
   title: string;
   value: string | number;
   description?: string;
+  prominent?: boolean;
 }) {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardDescription>{title}</CardDescription>
-        <CardTitle className="text-2xl">{value}</CardTitle>
+        <p className={typography.metricLabel}>{title}</p>
+        <p
+          className={cn(
+            prominent ? typography.metricValue : typography.metricValueSm,
+          )}
+        >
+          {value}
+        </p>
       </CardHeader>
       {description ? (
-        <CardContent className="text-muted-foreground pt-0 text-sm">
+        <CardContent className={cn(typography.bodyMuted, "pt-0")}>
           {description}
         </CardContent>
       ) : null}
@@ -40,12 +48,12 @@ export function InsightsPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">Your Insights</h1>
-        <p className="text-muted-foreground text-sm">{APP_TAGLINE}</p>
+        <h1 className={typography.screenTitle}>Your Insights</h1>
+        <p className={typography.screenSubtitle}>{APP_TAGLINE}</p>
       </div>
 
       {isLoading && (
-        <p className="text-muted-foreground text-sm">Loading insights…</p>
+        <p className={typography.bodyMuted}>Loading insights…</p>
       )}
 
       {error && (
@@ -57,13 +65,13 @@ export function InsightsPage() {
       {data && !data.isReady && (
         <Card className="border-dashed">
           <CardHeader className="text-center">
-            <CardTitle className="text-lg">Insights coming soon</CardTitle>
-            <CardDescription className="text-base leading-relaxed">
+            <h2 className={typography.sectionTitle}>Insights Coming Soon</h2>
+            <p className={cn(typography.bodyText, "leading-relaxed")}>
               We&apos;re still gathering your data. Keep tracking your habits
               for a few more days to unlock personalized Rizen Insights.
-            </CardDescription>
+            </p>
           </CardHeader>
-          <CardContent className="text-muted-foreground text-center text-sm">
+          <CardContent className={cn(typography.bodyMuted, "text-center")}>
             {data.habitCount > 0
               ? `${data.habitCount} ${data.habitCount === 1 ? "habit" : "habits"} tracked · ${data.metrics.steps_forward} steps forward so far`
               : "Create your first habit to get started."}
@@ -77,6 +85,7 @@ export function InsightsPage() {
             title="Rizen Score"
             value={data.insights.rizenScore}
             description="Your overall transformation score (0–100)"
+            prominent
           />
 
           <div className="grid grid-cols-2 gap-3">
@@ -88,9 +97,18 @@ export function InsightsPage() {
               title="Completion Rate"
               value={`${data.insights.completionRate}%`}
             />
-            <MetricCard title="Steps Forward" value={data.insights.stepsForward} />
-            <MetricCard title="Build Score" value={`${data.insights.buildScore}%`} />
-            <MetricCard title="Quit Score" value={`${data.insights.quitScore}%`} />
+            <MetricCard
+              title="Steps Forward"
+              value={data.insights.stepsForward}
+            />
+            <MetricCard
+              title="Build Score"
+              value={`${data.insights.buildScore}%`}
+            />
+            <MetricCard
+              title="Quit Score"
+              value={`${data.insights.quitScore}%`}
+            />
           </div>
 
           <div className="space-y-3">

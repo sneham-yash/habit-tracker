@@ -8,6 +8,8 @@ import { HabitFormDialog } from "@/components/habits/habit-form-dialog";
 import { HabitList } from "@/components/habits/habit-list";
 import { Button } from "@/components/ui/button";
 import { useHabits } from "@/hooks/use-habits";
+import { typography } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 import type { Habit } from "@/types/database";
 
 export function HabitsPage() {
@@ -35,8 +37,8 @@ export function HabitsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight">Habits</h1>
-          <p className="text-muted-foreground">
+          <h1 className={typography.screenTitle}>Habits</h1>
+          <p className={typography.screenSubtitle}>
             Create and manage the habits you want to track.
           </p>
         </div>
@@ -48,7 +50,7 @@ export function HabitsPage() {
       </div>
 
       {isLoading && (
-        <p className="text-muted-foreground text-sm">Loading habits…</p>
+        <p className={typography.bodyMuted}>Loading habits…</p>
       )}
 
       {error && (
@@ -59,8 +61,8 @@ export function HabitsPage() {
 
       {!isLoading && !error && habits?.length === 0 && (
         <div className="rounded-xl border border-dashed p-8 text-center">
-          <p className="font-medium">No habits yet</p>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <p className={typography.bodyText}>No habits yet</p>
+          <p className={cn(typography.bodyMuted, "mt-1")}>
             Create your first habit to get started.
           </p>
           <Button className="mt-4" onClick={openCreateDialog}>

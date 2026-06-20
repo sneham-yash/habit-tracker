@@ -4,6 +4,7 @@ import { QueryProvider } from "@/components/providers/query-provider";
 import { PwaRegister } from "@/components/pwa/pwa-register";
 import { ThemeProvider } from "@/components/theme-provider";
 import { APP_NAME, APP_TAGLINE, BRAND_ORANGE } from "@/constants/brand";
+import { inter, sora } from "@/lib/fonts";
 
 import "./globals.css";
 
@@ -43,8 +44,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${sora.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="font-sans antialiased" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

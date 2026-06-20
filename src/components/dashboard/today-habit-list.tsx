@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { TodayHabit } from "@/lib/habit-logs/api";
+import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
 type TodayHabitListProps = {
@@ -43,7 +44,7 @@ export function TodayHabitList({
   return (
     <section className="space-y-3">
       {showSectionTitle ? (
-        <h2 className="text-lg font-semibold">Today&apos;s Habits</h2>
+        <h2 className={typography.sectionTitle}>Today&apos;s Habits</h2>
       ) : null}
       <div className="grid gap-3">
         {habits.map((habit) => {
@@ -51,35 +52,38 @@ export function TodayHabitList({
           const habitType = habit.habit_type ?? "build";
 
           return (
-            <Card key={habit.id}>
-              <CardHeader className="flex-row items-center justify-between gap-4 space-y-0 py-4">
-                <div className="flex min-w-0 items-center gap-3">
-                  <HabitIcon
-                    icon={habit.icon}
-                    habitType={habitType}
-                    size="md"
-                  />
-                  <div className="min-w-0 space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <CardTitle
-                        className={cn(
-                          "truncate text-base",
-                          habit.completed && "text-muted-foreground line-through",
-                        )}
-                      >
-                        {habit.name}
-                      </CardTitle>
-                      <Badge
-                        variant={habitType === "build" ? "default" : "secondary"}
-                        className="shrink-0 text-[10px]"
-                      >
-                        {habitType === "build" ? "Build" : "Quit"}
-                      </Badge>
-                    </div>
-                    <CardDescription className="line-clamp-2">
-                      {getHabitSubtitle(habit)}
-                    </CardDescription>
+            <Card key={habit.id} className="py-0">
+              <CardHeader className="!flex min-w-0 flex-row items-center gap-3 space-y-0 py-4">
+                <HabitIcon
+                  icon={habit.icon}
+                  habitType={habitType}
+                  size="md"
+                  className="shrink-0"
+                />
+                <div className="min-w-0 flex-1 space-y-0.5">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <CardTitle
+                      className={cn(
+                        "min-w-0 flex-1 truncate text-base",
+                        habit.completed && "text-muted-foreground line-through",
+                      )}
+                      title={habit.name}
+                    >
+                      {habit.name}
+                    </CardTitle>
+                    <Badge
+                      variant={habitType === "build" ? "default" : "secondary"}
+                      className="shrink-0 text-xs"
+                    >
+                      {habitType === "build" ? "Build" : "Quit"}
+                    </Badge>
                   </div>
+                  <CardDescription
+                    className="truncate"
+                    title={getHabitSubtitle(habit)}
+                  >
+                    {getHabitSubtitle(habit)}
+                  </CardDescription>
                 </div>
 
                 <button

@@ -1,5 +1,10 @@
 const CACHE_NAME = "rizen-shell-v1";
-const SHELL_URLS = ["/dashboard", "/manifest.json", "/brand/rizen-logo.png"];
+const SHELL_URLS = [
+  "/dashboard",
+  "/manifest.json",
+  "/brand/rizen-logo.png",
+  "/brand/rizen-logo-white.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

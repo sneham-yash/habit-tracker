@@ -49,12 +49,12 @@ export function WeekCalendarStrip({
             aria-pressed={isSelected}
             aria-current={isToday ? "date" : undefined}
           >
-            <span className="text-xs font-medium uppercase">
+            <span className="font-sans text-xs font-medium uppercase tracking-wide">
               {formatWeekdayLetter(date)}
             </span>
             <span
               className={cn(
-                "flex size-8 items-center justify-center rounded-full text-sm font-semibold",
+                "font-sans flex size-8 items-center justify-center rounded-full text-sm font-semibold",
                 isSelected && "text-primary-foreground",
                 !isSelected && isToday && "ring-primary/40 ring-1",
               )}

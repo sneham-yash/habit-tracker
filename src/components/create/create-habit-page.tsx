@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { HabitTypeSelector } from "@/components/create/habit-type-selector";
 import { HabitForm } from "@/components/habits/habit-form";
 import { useCreateHabit } from "@/hooks/use-habits";
+import { typography } from "@/lib/typography";
 import { useUiStore } from "@/stores/ui-store";
 
 export function CreateHabitPage() {
@@ -58,8 +59,8 @@ export function CreateHabitPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <p className="text-muted-foreground text-sm">Step {step} of 2</p>
-        <h1 className="text-2xl font-bold tracking-tight">New habit</h1>
+        <p className={typography.bodyMuted}>Step {step} of 2</p>
+        <h1 className={typography.screenTitle}>Create Habit</h1>
       </div>
 
       {step === 1 ? (

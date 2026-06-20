@@ -19,6 +19,8 @@ import {
   useCategories,
   useCategoryHabitCounts,
 } from "@/hooks/use-categories";
+import { typography } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 
 export function CategoriesPage() {
   const { data: categories, isLoading, error } = useCategories();
@@ -34,8 +36,8 @@ export function CategoriesPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight">Categories</h1>
-          <p className="text-muted-foreground text-sm">
+          <h1 className={typography.screenTitle}>Categories</h1>
+          <p className={typography.screenSubtitle}>
             Organize your build and quit habits.
           </p>
         </div>
@@ -46,7 +48,7 @@ export function CategoriesPage() {
       </div>
 
       {isLoading && (
-        <p className="text-muted-foreground text-sm">Loading categories…</p>
+        <p className={typography.bodyMuted}>Loading categories…</p>
       )}
 
       {error && (
@@ -98,9 +100,9 @@ function CategorySection({
 }: CategorySectionProps) {
   return (
     <section className="space-y-3">
-      <h2 className="font-semibold">{title}</h2>
+      <h2 className={typography.sectionTitle}>{title}</h2>
       {categories.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
+        <div className={cn("rounded-xl border border-dashed p-6 text-center", typography.bodyMuted)}>
           No {CATEGORY_TYPE_LABELS[variant].toLowerCase()} categories yet.
         </div>
       ) : (

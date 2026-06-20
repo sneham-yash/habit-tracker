@@ -5,6 +5,7 @@ import * as React from "react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { typography } from "@/lib/typography";
 
 function AlertDialog({
   ...props
@@ -93,7 +94,7 @@ function AlertDialogTitle({
   return (
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
-      className={cn("text-lg font-semibold", className)}
+      className={cn(typography.dialogTitle, className)}
       {...props}
     />
   );
@@ -106,7 +107,7 @@ function AlertDialogDescription({
   return (
     <AlertDialogPrimitive.Description
       data-slot="alert-dialog-description"
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn("font-sans text-muted-foreground text-sm", className)}
       {...props}
     />
   );
