@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 import { signOut } from "@/app/(auth)/actions";
 import { APP_TAGLINE } from "@/constants/brand";
@@ -30,6 +31,11 @@ export function ProfilePage({
 }: ProfilePageProps) {
   const { data: insightsData } = useInsights();
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const nameLabel = displayName
     ? formatDisplayName(displayName)
     : "Your Profile";
@@ -78,7 +84,7 @@ export function ProfilePage({
             <ThemeToggle />
           </div>
           <p className={typography.bodyMuted}>
-            Current: {theme ?? "system"}
+            Current: {mounted ? (theme ?? "system") : "system"}
           </p>
           <Button variant="outline" asChild className="w-full">
             <Link href="/habits">Manage habits</Link>
