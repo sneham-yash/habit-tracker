@@ -146,3 +146,12 @@ export async function archiveHabit(id: string): Promise<void> {
 export async function deleteHabit(id: string): Promise<void> {
   return archiveHabit(id);
 }
+
+export async function permanentlyDeleteHabit(id: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase.from("habits").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}

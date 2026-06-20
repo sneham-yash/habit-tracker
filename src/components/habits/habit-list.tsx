@@ -1,6 +1,6 @@
 "use client";
 
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { ArchiveIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
 import { HabitIcon } from "@/components/icons/habit-icon";
 import { Badge } from "@/components/ui/badge";
@@ -19,10 +19,11 @@ import type { Habit } from "@/types/database";
 type HabitListProps = {
   habits: Habit[];
   onEdit: (habit: Habit) => void;
+  onArchive: (habit: Habit) => void;
   onDelete: (habit: Habit) => void;
 };
 
-export function HabitList({ habits, onEdit, onDelete }: HabitListProps) {
+export function HabitList({ habits, onEdit, onArchive, onDelete }: HabitListProps) {
   return (
     <div className="grid gap-4">
       {habits.map((habit) => {
@@ -50,7 +51,7 @@ export function HabitList({ habits, onEdit, onDelete }: HabitListProps) {
                 </div>
               </div>
 
-              <div className="flex shrink-0 gap-2">
+              <div className="flex shrink-0 gap-1">
                 <Button
                   variant="outline"
                   size="icon"
@@ -62,8 +63,16 @@ export function HabitList({ habits, onEdit, onDelete }: HabitListProps) {
                 <Button
                   variant="outline"
                   size="icon"
+                  onClick={() => onArchive(habit)}
+                  aria-label={`Archive ${habit.name}`}
+                >
+                  <ArchiveIcon />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={() => onDelete(habit)}
-                  aria-label={`Delete ${habit.name}`}
+                  aria-label={`Delete ${habit.name} permanently`}
                 >
                   <Trash2Icon />
                 </Button>

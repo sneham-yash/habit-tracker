@@ -4,10 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3Icon,
-  FolderOpenIcon,
+  CheckSquareIcon,
   HomeIcon,
   PlusCircleIcon,
-  UserIcon,
+  SettingsIcon,
 } from "lucide-react";
 
 import { typography } from "@/lib/typography";
@@ -15,10 +15,10 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", label: "Home", icon: HomeIcon },
-  { href: "/categories", label: "Categories", icon: FolderOpenIcon },
+  { href: "/habits", label: "Habits", icon: CheckSquareIcon },
   { href: "/create", label: "Create", icon: PlusCircleIcon },
   { href: "/insights", label: "Insights", icon: BarChart3Icon },
-  { href: "/profile", label: "Profile", icon: UserIcon },
+  { href: "/settings", label: "Settings", icon: SettingsIcon },
 ];
 
 export function BottomNav() {

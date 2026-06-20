@@ -1,5 +1,5 @@
-import { HabitsPage } from "@/components/habits/habits-page";
+import { DailyHabitsPage } from "@/components/habits/daily-habits-page";
 
 export default function Page() {
-  return <HabitsPage />;
+  return <DailyHabitsPage />;
 }

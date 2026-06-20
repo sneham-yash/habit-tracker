@@ -5,81 +5,47 @@ import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { HabitFilterTabs } from "@/components/dashboard/habit-filter-tabs";
-import { HomeHeader } from "@/components/dashboard/home-header";
-import { RizenHeroCard } from "@/components/dashboard/rizen-hero-card";
+import { TodayProgress } from "@/components/dashboard/today-progress";
 import { TodayHabitList } from "@/components/dashboard/today-habit-list";
 import { WeekCalendarStrip } from "@/components/dashboard/week-calendar-strip";
 import { Button } from "@/components/ui/button";
-import { calculateRizenScore } from "@/lib/analytics/rizen-score";
-import { formatTodayLabel } from "@/lib/dates";
 import {
   filterHabitsByTab,
   getHabitTabCounts,
 } from "@/lib/habits/filter";
 import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
-import { useInsights } from "@/hooks/use-insights";
-import { useHabits } from "@/hooks/use-habits";
 import {
   useTodayHabits,
   useToggleHabitCompletion,
 } from "@/hooks/use-dashboard";
+import { useHabits } from "@/hooks/use-habits";
 import { useUiStore } from "@/stores/ui-store";
 
-type DashboardPageProps = {
-  displayName?: string | null;
+type DailyHabitsViewProps = {
+  showCreateButton?: boolean;
 };
 
-export function DashboardPage({ displayName }: DashboardPageProps) {
+export function DailyHabitsView({ showCreateButton = true }: DailyHabitsViewProps) {
   const homeTab = useUiStore((s) => s.homeTab);
   const setHomeTab = useUiStore((s) => s.setHomeTab);
   const selectedDate = useUiStore((s) => s.selectedDate);
   const setSelectedDate = useUiStore((s) => s.setSelectedDate);
   const { data: allHabits, isLoading: habitsLoading } = useHabits();
   const { data: todayHabits, isLoading, error } = useTodayHabits(selectedDate);
-  const { data: insightsData } = useInsights();
   const toggleCompletion = useToggleHabitCompletion(selectedDate);
   const [pendingHabitId, setPendingHabitId] = useState<string>();
 
-  const filteredHabits = useMemo(
-    () => filterHabitsByTab(todayHabits ?? [], homeTab),
-    [todayHabits, homeTab],
-  );
-
   const allToday = useMemo(() => todayHabits ?? [], [todayHabits]);
-  const completedCount = filteredHabits.filter((h) => h.completed).length;
-  const totalCount = filteredHabits.length;
-  const hasAnyHabits = (allHabits?.length ?? 0) > 0;
-
-  const tabCounts = useMemo(
-    () => getHabitTabCounts(allToday),
-    [allToday],
+  const filteredHabits = useMemo(
+    () => filterHabitsByTab(allToday, homeTab),
+    [allToday, homeTab],
   );
-
-  const todayRizenScore = useMemo(() => {
-    if (insightsData?.insights) return insightsData.insights.rizenScore;
-    const build = allToday.filter((h) => (h.habit_type ?? "build") === "build");
-    const quit = allToday.filter((h) => h.habit_type === "quit");
-    const rate =
-      allToday.length === 0
-        ? 0
-        : (allToday.filter((h) => h.completed).length / allToday.length) * 100;
-    const buildRate =
-      build.length === 0
-        ? 0
-        : (build.filter((h) => h.completed).length / build.length) * 100;
-    const quitRate =
-      quit.length === 0
-        ? 0
-        : (quit.filter((h) => h.completed).length / quit.length) * 100;
-    return calculateRizenScore({
-      completionRate: rate,
-      currentStreak: 0,
-      buildSuccessRate: buildRate,
-      quitSuccessRate: quitRate,
-      growthTrend: 0,
-    });
-  }, [allToday, insightsData]);
+  const tabCounts = useMemo(() => getHabitTabCounts(allToday), [allToday]);
+  const hasAnyHabits = (allHabits?.length ?? 0) > 0;
+  const completedAll = allToday.filter((h) => h.completed).length;
+  const totalAll = allToday.length;
+  const totalFiltered = filteredHabits.length;
 
   async function handleToggle(habitId: string) {
     setPendingHabitId(habitId);
@@ -92,9 +58,9 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
 
   return (
     <div className="space-y-6">
-      <HomeHeader
-        displayName={displayName}
-        dateLabel={formatTodayLabel(selectedDate)}
+      <WeekCalendarStrip
+        selectedDate={selectedDate}
+        onSelectDate={setSelectedDate}
       />
 
       {isLoading || habitsLoading ? (
@@ -107,29 +73,20 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
         </p>
       ) : null}
 
-      {!isLoading && !habitsLoading && !error && hasAnyHabits ? (
-        <RizenHeroCard
-          rizenScore={todayRizenScore}
-          transformation={insightsData?.insights.transformation ?? 0}
-          currentStreak={insightsData?.insights.currentStreak ?? 0}
-          stepsForward={insightsData?.insights.stepsForward ?? 0}
-          completedCount={completedCount}
-          totalCount={totalCount || allToday.length}
+      {!isLoading && !habitsLoading && !error && hasAnyHabits && totalAll > 0 ? (
+        <TodayProgress
+          completedCount={completedAll}
+          totalCount={totalAll}
+          compact
         />
       ) : null}
 
       {!isLoading && !habitsLoading && !error && hasAnyHabits ? (
-        <>
-          <WeekCalendarStrip
-            selectedDate={selectedDate}
-            onSelectDate={setSelectedDate}
-          />
-          <HabitFilterTabs
-            value={homeTab}
-            onChange={setHomeTab}
-            counts={tabCounts}
-          />
-        </>
+        <HabitFilterTabs
+          value={homeTab}
+          onChange={setHomeTab}
+          counts={tabCounts}
+        />
       ) : null}
 
       {!isLoading && !habitsLoading && !error && !hasAnyHabits ? (
@@ -147,7 +104,7 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
         </div>
       ) : null}
 
-      {!isLoading && !habitsLoading && !error && hasAnyHabits && totalCount === 0 ? (
+      {!isLoading && !habitsLoading && !error && hasAnyHabits && totalFiltered === 0 ? (
         <div className="rounded-xl border border-dashed p-8 text-center">
           <p className={typography.bodyText}>Nothing in this view today</p>
           <p className={cn(typography.bodyMuted, "mt-1")}>
@@ -156,7 +113,7 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
         </div>
       ) : null}
 
-      {!isLoading && !habitsLoading && !error && totalCount > 0 ? (
+      {!isLoading && !habitsLoading && !error && totalFiltered > 0 ? (
         <TodayHabitList
           habits={filteredHabits}
           pendingHabitId={pendingHabitId}
@@ -164,7 +121,7 @@ export function DashboardPage({ displayName }: DashboardPageProps) {
         />
       ) : null}
 
-      {hasAnyHabits ? (
+      {showCreateButton && hasAnyHabits ? (
         <Button className="w-full" asChild>
           <Link href="/create">
             <PlusIcon />

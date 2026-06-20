@@ -1,8 +1,10 @@
 "use client";
 
-import { PlusIcon } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeftIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
+import { ArchiveHabitDialog } from "@/components/habits/archive-habit-dialog";
 import { DeleteHabitDialog } from "@/components/habits/delete-habit-dialog";
 import { HabitFormDialog } from "@/components/habits/habit-form-dialog";
 import { HabitList } from "@/components/habits/habit-list";
@@ -12,9 +14,10 @@ import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 import type { Habit } from "@/types/database";
 
-export function HabitsPage() {
+export function ManageHabitsPage() {
   const { data: habits, isLoading, error } = useHabits();
   const [formOpen, setFormOpen] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState<Habit | undefined>();
 
@@ -28,6 +31,11 @@ export function HabitsPage() {
     setFormOpen(true);
   }
 
+  function openArchiveDialog(habit: Habit) {
+    setSelectedHabit(habit);
+    setArchiveOpen(true);
+  }
+
   function openDeleteDialog(habit: Habit) {
     setSelectedHabit(habit);
     setDeleteOpen(true);
@@ -35,11 +43,22 @@ export function HabitsPage() {
 
   return (
     <div className="space-y-6">
+      <Link
+        href="/settings"
+        className={cn(
+          typography.bodyText,
+          "text-muted-foreground inline-flex items-center gap-1 hover:text-foreground",
+        )}
+      >
+        <ArrowLeftIcon className="size-4" />
+        Settings
+      </Link>
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
-          <h1 className={typography.screenTitle}>Habits</h1>
+          <h1 className={typography.screenTitle}>Manage Habits</h1>
           <p className={typography.screenSubtitle}>
-            Create and manage the habits you want to track.
+            Edit, archive, or delete your habits.
           </p>
         </div>
 
@@ -76,6 +95,7 @@ export function HabitsPage() {
         <HabitList
           habits={habits}
           onEdit={openEditDialog}
+          onArchive={openArchiveDialog}
           onDelete={openDeleteDialog}
         />
       )}
@@ -84,6 +104,12 @@ export function HabitsPage() {
         open={formOpen}
         onOpenChange={setFormOpen}
         habit={selectedHabit}
+      />
+
+      <ArchiveHabitDialog
+        habit={selectedHabit ?? null}
+        open={archiveOpen}
+        onOpenChange={setArchiveOpen}
       />
 
       <DeleteHabitDialog

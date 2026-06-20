@@ -3,8 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  archiveHabit,
   createHabit,
-  deleteHabit,
+  permanentlyDeleteHabit,
   fetchHabits,
   updateHabit,
   type HabitFormValues,
@@ -47,11 +48,24 @@ export function useUpdateHabit() {
   });
 }
 
-export function useDeleteHabit() {
+export function useArchiveHabit() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => deleteHabit(id),
+    mutationFn: (id: string) => archiveHabit(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: habitsKeys.all });
+      queryClient.invalidateQueries({ queryKey: insightsKeys.all });
+      queryClient.invalidateQueries({ queryKey: categoriesKeys.habitCounts });
+    },
+  });
+}
+
+export function usePermanentlyDeleteHabit() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => permanentlyDeleteHabit(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: habitsKeys.all });
       queryClient.invalidateQueries({ queryKey: insightsKeys.all });

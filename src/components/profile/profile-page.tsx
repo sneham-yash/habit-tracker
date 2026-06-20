@@ -1,12 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { signOut } from "@/app/(auth)/actions";
-import { APP_TAGLINE } from "@/constants/brand";
-import { ThemeToggle } from "@/components/profile/theme-toggle";
+import { AvatarEditor } from "@/components/profile/avatar-editor";
+import { EditProfileDialog } from "@/components/profile/edit-profile-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,50 +19,50 @@ import { cn } from "@/lib/utils";
 type ProfilePageProps = {
   email: string;
   displayName: string | null;
+  avatarUrl: string | null;
   memberSince: string;
 };
 
 export function ProfilePage({
   email,
   displayName,
+  avatarUrl,
   memberSince,
 }: ProfilePageProps) {
   const { data: insightsData } = useInsights();
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [editOpen, setEditOpen] = useState(false);
   const nameLabel = displayName
     ? formatDisplayName(displayName)
     : "Your Profile";
 
   return (
     <div className="space-y-6">
+      <AvatarEditor
+        displayName={displayName}
+        email={email}
+        avatarUrl={avatarUrl}
+      />
+
       <div className="space-y-1 text-center">
         <h1 className={typography.screenTitle}>{nameLabel}</h1>
-        <p className={typography.screenSubtitle}>{APP_TAGLINE}</p>
+        <p className={typography.bodyMuted}>{email}</p>
+        <p className={cn(typography.bodyMuted, "text-sm")}>
+          Member since {memberSince}
+        </p>
       </div>
 
       <Card>
-        <CardHeader>
-          <CardDescription>{email}</CardDescription>
-          <CardTitle className="text-base">Member since {memberSince}</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Your stats</CardTitle>
+          <CardDescription>Recent performance over the last 30 days</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent>
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="space-y-1">
               <p className={typography.metricValueSm}>
                 {insightsData?.insights.rizenScore ?? 0}
               </p>
-              <p className={typography.metricLabel}>Current Rizen Score</p>
-            </div>
-            <div className="space-y-1">
-              <p className={typography.metricValueSm}>
-                {insightsData?.insights.longestStreak ?? 0}
-              </p>
-              <p className={typography.metricLabel}>Longest Streak</p>
+              <p className={typography.metricLabel}>Rizen Score</p>
             </div>
             <div className="space-y-1">
               <p className={typography.metricValueSm}>
@@ -73,35 +70,25 @@ export function ProfilePage({
               </p>
               <p className={typography.metricLabel}>Steps Forward</p>
             </div>
+            <div className="space-y-1">
+              <p className={typography.metricValueSm}>
+                {insightsData?.insights.longestStreak ?? 0}
+              </p>
+              <p className={typography.metricLabel}>Longest Streak</p>
+            </div>
           </div>
-          <p className={cn(typography.bodyMuted, "text-center")}>
-            Recent performance over the last 30 days
-          </p>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Settings</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className={typography.bodyText}>Theme</span>
-            <ThemeToggle />
-          </div>
-          <p className={typography.bodyMuted}>
-            Current: {mounted ? (theme ?? "system") : "system"}
-          </p>
-          <Button variant="outline" asChild className="w-full">
-            <Link href="/habits">Manage habits</Link>
-          </Button>
-          <form action={signOut}>
-            <Button type="submit" variant="outline" className="w-full">
-              Sign out
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <Button className="w-full" onClick={() => setEditOpen(true)}>
+        Edit Profile
+      </Button>
+
+      <EditProfileDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        displayName={displayName}
+      />
     </div>
   );
 }

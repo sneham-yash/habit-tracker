@@ -123,3 +123,34 @@ export async function fetchCategoryHabitCounts(): Promise<
   }
   return counts;
 }
+
+export async function updateCategory(
+  id: string,
+  values: { name?: string; icon?: string | null },
+): Promise<Category> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("categories")
+    .update({
+      ...(values.name !== undefined ? { name: values.name.trim() } : {}),
+      ...(values.icon !== undefined ? { icon: values.icon } : {}),
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as Category;
+}
+
+export async function deleteCategory(id: string): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase.from("categories").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}

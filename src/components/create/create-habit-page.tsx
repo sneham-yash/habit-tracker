@@ -46,7 +46,7 @@ export function CreateHabitPage() {
         category_id: values.category_id ?? defaultCategoryId,
       });
       resetCreateFlow();
-      router.push("/dashboard");
+      router.push("/habits");
     } catch (submitError) {
       setError(
         submitError instanceof Error

@@ -10,29 +10,29 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { usePermanentlyDeleteHabit } from "@/hooks/use-habits";
+import { useArchiveHabit } from "@/hooks/use-habits";
 import type { Habit } from "@/types/database";
 
-type DeleteHabitDialogProps = {
+type ArchiveHabitDialogProps = {
   habit: Habit | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
 
-export function DeleteHabitDialog({
+export function ArchiveHabitDialog({
   habit,
   open,
   onOpenChange,
-}: DeleteHabitDialogProps) {
-  const deleteHabit = usePermanentlyDeleteHabit();
+}: ArchiveHabitDialogProps) {
+  const archiveHabit = useArchiveHabit();
 
-  async function handleDelete() {
+  async function handleArchive() {
     if (!habit) {
       return;
     }
 
     try {
-      await deleteHabit.mutateAsync(habit.id);
+      await archiveHabit.mutateAsync(habit.id);
       onOpenChange(false);
     } catch {
       // Error surfaced via mutation state if needed later.
@@ -43,28 +43,28 @@ export function DeleteHabitDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete habit permanently?</AlertDialogTitle>
+          <AlertDialogTitle>Archive habit?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete{" "}
-            <span className="font-medium text-foreground">{habit?.name}</span>{" "}
-            and all associated completion history. This cannot be undone.
+            This will archive{" "}
+            <span className="font-medium text-foreground">{habit?.name}</span>.
+            Your completion history is preserved for Steps Forward.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        {deleteHabit.error && (
+        {archiveHabit.error && (
           <p className="text-destructive text-sm" role="alert">
-            {deleteHabit.error.message}
+            {archiveHabit.error.message}
           </p>
         )}
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleteHabit.isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={archiveHabit.isPending}>Cancel</AlertDialogCancel>
           <Button
             variant="destructive"
-            onClick={handleDelete}
-            disabled={deleteHabit.isPending}
+            onClick={handleArchive}
+            disabled={archiveHabit.isPending}
           >
-            {deleteHabit.isPending ? "Deleting…" : "Delete permanently"}
+            {archiveHabit.isPending ? "Archiving…" : "Archive"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

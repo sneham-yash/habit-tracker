@@ -88,7 +88,7 @@ export function CategoryDetailPage({ categoryId }: CategoryDetailPageProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild>
-          <Link href="/categories">
+          <Link href="/settings/categories">
             <ArrowLeftIcon />
             <span className="sr-only">Back</span>
           </Link>

@@ -1,5 +1,5 @@
-import { CategoriesPage } from "@/components/categories/categories-page";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  return <CategoriesPage />;
+export default function CategoriesRedirectPage() {
+  redirect("/settings/categories");
 }

@@ -8,6 +8,7 @@ function formatMemberSince(dateString: string): string {
     year: "numeric",
   });
 }
+
 export default async function Page() {
   const supabase = await createClient();
   const {
@@ -17,13 +18,14 @@ export default async function Page() {
   const { data: profile } = user
     ? await supabase
         .from("profiles")
-        .select("display_name, created_at")
+        .select("display_name, avatar_url, created_at")
         .eq("id", user.id)
         .maybeSingle()
     : { data: null };
 
   const profileData = profile as {
     display_name: string | null;
+    avatar_url: string | null;
     created_at: string;
   } | null;
 
@@ -31,6 +33,7 @@ export default async function Page() {
     <ProfilePage
       email={user?.email ?? ""}
       displayName={profileData?.display_name ?? null}
+      avatarUrl={profileData?.avatar_url ?? null}
       memberSince={
         profileData?.created_at
           ? formatMemberSince(profileData.created_at)

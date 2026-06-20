@@ -10,29 +10,27 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { usePermanentlyDeleteHabit } from "@/hooks/use-habits";
-import type { Habit } from "@/types/database";
+import { useDeleteCategory } from "@/hooks/use-update-category";
+import type { Category } from "@/types/database";
 
-type DeleteHabitDialogProps = {
-  habit: Habit | null;
+type DeleteCategoryDialogProps = {
+  category: Category | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
 
-export function DeleteHabitDialog({
-  habit,
+export function DeleteCategoryDialog({
+  category,
   open,
   onOpenChange,
-}: DeleteHabitDialogProps) {
-  const deleteHabit = usePermanentlyDeleteHabit();
+}: DeleteCategoryDialogProps) {
+  const deleteCategory = useDeleteCategory();
 
   async function handleDelete() {
-    if (!habit) {
-      return;
-    }
+    if (!category) return;
 
     try {
-      await deleteHabit.mutateAsync(habit.id);
+      await deleteCategory.mutateAsync(category.id);
       onOpenChange(false);
     } catch {
       // Error surfaced via mutation state if needed later.
@@ -43,28 +41,28 @@ export function DeleteHabitDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete habit permanently?</AlertDialogTitle>
+          <AlertDialogTitle>Delete category?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete{" "}
-            <span className="font-medium text-foreground">{habit?.name}</span>{" "}
-            and all associated completion history. This cannot be undone.
+            This will delete{" "}
+            <span className="font-medium text-foreground">{category?.name}</span>.
+            Habits in this category will remain but lose their category link.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        {deleteHabit.error && (
+        {deleteCategory.error && (
           <p className="text-destructive text-sm" role="alert">
-            {deleteHabit.error.message}
+            {deleteCategory.error.message}
           </p>
         )}
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleteHabit.isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={deleteCategory.isPending}>Cancel</AlertDialogCancel>
           <Button
             variant="destructive"
             onClick={handleDelete}
-            disabled={deleteHabit.isPending}
+            disabled={deleteCategory.isPending}
           >
-            {deleteHabit.isPending ? "Deleting…" : "Delete permanently"}
+            {deleteCategory.isPending ? "Deleting…" : "Delete"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
