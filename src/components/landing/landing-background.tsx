@@ -4,12 +4,12 @@ export function LandingBackground() {
       className="pointer-events-none fixed inset-0 overflow-hidden"
       aria-hidden
     >
-      <div className="bg-primary/12 absolute -top-32 -left-32 h-96 w-96 rounded-full blur-3xl dark:bg-primary/6" />
-      <div className="bg-primary/8 absolute top-1/4 -right-24 h-80 w-80 rounded-full blur-3xl dark:bg-primary/5" />
-      <div className="bg-primary/6 absolute bottom-0 left-1/3 h-72 w-72 rounded-full blur-3xl dark:bg-primary/4" />
+      <div className="landing-animate-float bg-primary/12 absolute -top-32 -left-32 h-96 w-96 rounded-full blur-3xl dark:bg-primary/6" />
+      <div className="landing-animate-float-slow bg-primary/8 absolute top-1/4 -right-24 h-80 w-80 rounded-full blur-3xl dark:bg-primary/5" />
+      <div className="landing-animate-float bg-primary/6 absolute bottom-0 left-1/3 h-72 w-72 rounded-full blur-3xl [animation-delay:4s] dark:bg-primary/4" />
 
       <svg
-        className="text-primary absolute top-16 -left-4 h-72 w-36 opacity-[0.07] dark:opacity-[0.11]"
+        className="landing-animate-path-glow text-primary absolute top-16 -left-4 h-72 w-36 opacity-[0.07] dark:opacity-[0.11]"
         viewBox="0 0 120 220"
         fill="none"
       >
@@ -36,7 +36,7 @@ export function LandingBackground() {
       </svg>
 
       <svg
-        className="text-primary absolute -right-8 bottom-12 h-64 w-64 opacity-[0.08] dark:opacity-[0.12]"
+        className="landing-animate-drift text-primary absolute -right-8 bottom-12 h-64 w-64 opacity-[0.08] dark:opacity-[0.12]"
         viewBox="0 0 200 200"
         fill="currentColor"
       >
