@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import {
   formatDayNumber,
   formatWeekdayLetter,
@@ -20,6 +21,15 @@ export function WeekCalendarStrip({
 }: WeekCalendarStripProps) {
   const today = getTodayDateString();
   const weekDays = getWeekDaysAround(selectedDate);
+  const selectedButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    selectedButtonRef.current?.scrollIntoView({
+      behavior: "instant",
+      inline: "nearest",
+      block: "nearest",
+    });
+  }, [selectedDate]);
 
   return (
     <div
@@ -35,6 +45,7 @@ export function WeekCalendarStrip({
         return (
           <button
             key={date}
+            ref={isSelected ? selectedButtonRef : undefined}
             type="button"
             disabled={isFuture}
             onClick={() => onSelectDate(date)}
