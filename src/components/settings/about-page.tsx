@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 
 import { RizenLogo } from "@/components/brand/rizen-logo";
+import { CreatorCredit } from "@/components/brand/creator-credit";
 import { APP_NAME, APP_TAGLINE } from "@/constants/brand";
 import {
   Card,
@@ -52,6 +53,8 @@ export function AboutPage({ version }: AboutPageProps) {
           </p>
         </CardContent>
       </Card>
+
+      <CreatorCredit variant="about" />
     </div>
   );
 }

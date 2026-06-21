@@ -31,18 +31,25 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const publicRoutes = ["/login", "/signup", "/auth/callback"];
-  const isPublicRoute =
-    request.nextUrl.pathname === "/" ||
-    publicRoutes.some((route) =>
-      request.nextUrl.pathname.startsWith(route),
-    );
+  const protectedPrefixes = [
+    "/dashboard",
+    "/habits",
+    "/create",
+    "/insights",
+    "/categories",
+    "/profile",
+    "/settings",
+  ];
+
+  const pathname = request.nextUrl.pathname;
+  const isProtectedRoute = protectedPrefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
 
   const isAuthRoute =
-    request.nextUrl.pathname.startsWith("/login") ||
-    request.nextUrl.pathname.startsWith("/signup");
+    pathname.startsWith("/login") || pathname.startsWith("/signup");
 
-  if (!user && !isPublicRoute) {
+  if (!user && isProtectedRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

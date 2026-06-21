@@ -1,13 +1,12 @@
 import Link from "next/link";
 
+import { CreatorCredit } from "@/components/brand/creator-credit";
 import { LandingReveal } from "@/components/landing/landing-reveal";
 import { APP_NAME } from "@/constants/brand";
 import { LANDING_FOOTER } from "@/constants/landing";
 import { typography } from "@/lib/typography";
 
 export function LandingFooter() {
-  const year = new Date().getFullYear();
-
   return (
     <LandingReveal variant="fade-in">
       <footer className="border-border/40 border-t">
@@ -34,9 +33,7 @@ export function LandingFooter() {
         </div>
 
         <div className="border-border/40 border-t">
-          <p className="text-muted-foreground py-6 text-center text-xs">
-            © {year} {APP_NAME}. All rights reserved.
-          </p>
+          <CreatorCredit variant="landing" />
         </div>
       </footer>
     </LandingReveal>
