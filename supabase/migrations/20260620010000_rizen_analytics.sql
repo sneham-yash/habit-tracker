@@ -34,10 +34,10 @@ begin
   if not found then return; end if;
 
   for v_habit in
-    select id from public.habits
-    where category_id = p_category_id
-      and archived_at is null
-      and user_id = auth.uid()
+    select h.id from public.habits h
+    where h.category_id = p_category_id
+      and h.archived_at is null
+      and h.user_id = auth.uid()
   loop
     select * into v_analytics
     from public.get_habit_analytics(v_habit.id, v_start, v_end);

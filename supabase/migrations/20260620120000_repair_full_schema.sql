@@ -187,10 +187,10 @@ BEGIN
   IF NOT FOUND THEN RETURN; END IF;
 
   FOR v_habit IN
-    SELECT id FROM public.habits
-    WHERE category_id = p_category_id
-      AND archived_at IS NULL
-      AND user_id = auth.uid()
+    SELECT h.id FROM public.habits h
+    WHERE h.category_id = p_category_id
+      AND h.archived_at IS NULL
+      AND h.user_id = auth.uid()
   LOOP
     SELECT * INTO v_analytics
     FROM public.get_habit_analytics(v_habit.id, v_start, v_end);
