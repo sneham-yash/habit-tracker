@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 
-import { ThemeSelector } from "@/components/settings/theme-selector";
+import { ThemeModePicker } from "@/components/theme/theme-mode-picker";
 import {
   Card,
   CardContent,
@@ -41,7 +41,7 @@ export function AppearancePage() {
           <CardDescription>Light, dark, or match your system</CardDescription>
         </CardHeader>
         <CardContent>
-          <ThemeSelector />
+          <ThemeModePicker variant="inline" />
         </CardContent>
       </Card>
     </div>

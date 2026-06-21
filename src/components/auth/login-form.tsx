@@ -4,17 +4,9 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 import { loginWithEmail, type AuthActionState } from "@/app/(auth)/actions";
+import { AuthShell } from "@/components/auth/auth-shell";
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
-import { APP_NAME, APP_TAGLINE } from "@/constants/brand";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { typography } from "@/lib/typography";
@@ -31,69 +23,76 @@ export function LoginForm({ errorMessage }: { errorMessage?: string }) {
   const error = state.error ?? errorMessage;
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Welcome back</CardTitle>
-        <CardDescription>
-          Sign in to {APP_NAME} — {APP_TAGLINE}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <GoogleSignInButton />
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center font-sans text-xs uppercase tracking-wide">
-            <span className={cn(typography.bodyMuted, "bg-card px-2")}>
-              Or continue with email
-            </span>
-          </div>
-        </div>
-
-        <form action={formAction} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              autoComplete="email"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-            />
-          </div>
-
-          {error && (
-            <p className="text-destructive text-sm" role="alert">
-              {error}
-            </p>
-          )}
-
-          <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? "Signing in…" : "Sign in"}
-          </Button>
-        </form>
-      </CardContent>
-      <CardFooter className="justify-center">
+    <AuthShell
+      variant="login"
+      footer={
         <p className={typography.bodyMuted}>
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-primary underline-offset-4 hover:underline">
-            Sign up
+          New to RIZEN?{" "}
+          <Link
+            href="/signup"
+            className="text-primary font-medium underline-offset-4 hover:underline"
+          >
+            Take your first step
           </Link>
         </p>
-      </CardFooter>
-    </Card>
+      }
+    >
+      <GoogleSignInButton />
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="border-border/60 w-full border-t" />
+        </div>
+        <div className="relative flex justify-center">
+          <span className={cn(typography.bodyMuted, "bg-background px-3 text-xs")}>
+            or sign in with email
+          </span>
+        </div>
+      </div>
+
+      <form action={formAction} className="space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="email" className={typography.formLabel}>
+            Email
+          </Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            className="h-11"
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password" className={typography.formLabel}>
+            Password
+          </Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            className="h-11"
+            required
+          />
+        </div>
+
+        {error && (
+          <p className="text-destructive text-sm" role="alert">
+            {error}
+          </p>
+        )}
+
+        <Button
+          type="submit"
+          className="h-11 w-full font-medium transition-transform active:scale-[0.98]"
+          disabled={pending}
+        >
+          {pending ? "Signing in…" : "Sign in"}
+        </Button>
+      </form>
+    </AuthShell>
   );
 }

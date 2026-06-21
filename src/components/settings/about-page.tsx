@@ -1,15 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 
-import {
-  APP_NAME,
-  APP_TAGLINE,
-  RIZEN_LOGO_SRC,
-  RIZEN_LOGO_WHITE_SRC,
-} from "@/constants/brand";
+import { RizenLogo } from "@/components/brand/rizen-logo";
+import { APP_NAME, APP_TAGLINE } from "@/constants/brand";
 import {
   Card,
   CardContent,
@@ -45,20 +40,7 @@ export function AboutPage({ version }: AboutPageProps) {
 
       <Card>
         <CardHeader className="items-center text-center">
-          <Image
-            src={RIZEN_LOGO_SRC}
-            alt={APP_NAME}
-            width={120}
-            height={40}
-            className="h-10 w-auto object-contain dark:hidden"
-          />
-          <Image
-            src={RIZEN_LOGO_WHITE_SRC}
-            alt={APP_NAME}
-            width={120}
-            height={40}
-            className="hidden h-10 w-auto object-contain dark:block"
-          />
+          <RizenLogo size="md" />
           <CardTitle className="text-base">{APP_NAME}</CardTitle>
           <CardDescription>{APP_TAGLINE}</CardDescription>
         </CardHeader>

@@ -16,6 +16,10 @@ export const typography = {
   navLabel: "font-sans text-xs font-medium",
   formLabel: "font-sans text-sm font-medium leading-none",
   dialogTitle: "font-display text-lg font-semibold leading-none",
+  authHeadline:
+    "font-display text-[1.625rem] font-semibold tracking-tight leading-tight text-foreground",
+  authTagline:
+    "font-display text-sm font-medium tracking-wide text-primary",
 } as const;
 
 export function formatDisplayName(name: string): string {

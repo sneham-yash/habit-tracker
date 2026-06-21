@@ -18,7 +18,7 @@ export function GoogleSignInButton() {
     <Button
       type="button"
       variant="outline"
-      className="w-full"
+      className="border-border/80 bg-background/50 hover:bg-accent/50 h-11 w-full backdrop-blur-sm"
       onClick={handleGoogleSignIn}
     >
       <GoogleIcon />
