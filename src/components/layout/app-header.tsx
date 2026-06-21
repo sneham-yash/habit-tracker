@@ -16,7 +16,7 @@ export function AppHeader({ displayName, email, avatarUrl }: AppHeaderProps) {
   return (
     <header className="border-border bg-background/95 fixed inset-x-0 top-0 z-50 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="mx-auto flex h-14 max-w-lg items-center justify-between px-4">
-        <Link href="/dashboard" className="shrink-0" aria-label={`${APP_NAME} home`}>
+        <Link href="/" className="shrink-0" aria-label={`${APP_NAME} home`}>
           <RizenLogo size="sm" priority />
         </Link>
 

@@ -18,6 +18,8 @@ import {
 export const LANDING_SEO_DESCRIPTION =
   "Build better habits. Quit the ones holding you back. RIZEN treats transformation as a daily practice—one step closer, every day.";
 
+export const LANDING_DASHBOARD_CTA = "Go to Dashboard";
+
 export const LANDING_HERO = {
   eyebrow: APP_TAGLINE,
   headline: "Transform one step at a time.",

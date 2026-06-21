@@ -1,5 +1,7 @@
-import { APP_TAGLINE } from "@/constants/brand";
+import Link from "next/link";
+
 import { RizenLogo } from "@/components/brand/rizen-logo";
+import { APP_NAME, APP_TAGLINE } from "@/constants/brand";
 import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
@@ -34,7 +36,9 @@ export function AuthShell({ variant, children, footer }: AuthShellProps) {
     >
       <header className="space-y-3 pt-2 text-center">
         <div className="flex justify-center opacity-90">
-          <RizenLogo size="sm" priority />
+          <Link href="/" aria-label={`${APP_NAME} home`}>
+            <RizenLogo size="sm" priority />
+          </Link>
         </div>
         <p className={typography.authTagline}>{APP_TAGLINE}</p>
         <div className="space-y-2">

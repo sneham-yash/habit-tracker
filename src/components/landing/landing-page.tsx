@@ -8,19 +8,23 @@ import { LandingMetrics } from "./landing-metrics";
 import { LandingNav } from "./landing-nav";
 import { LandingPhilosophy } from "./landing-philosophy";
 
-export function LandingPage() {
+type LandingPageProps = {
+  isAuthenticated: boolean;
+};
+
+export function LandingPage({ isAuthenticated }: LandingPageProps) {
   return (
     <div className="bg-background text-foreground relative min-h-svh">
       <LandingBackground />
       <div className="relative z-10">
-        <LandingNav />
+        <LandingNav isAuthenticated={isAuthenticated} />
         <main>
-          <LandingHero />
+          <LandingHero isAuthenticated={isAuthenticated} />
           <LandingPhilosophy />
           <LandingFeatures />
           <LandingMetrics />
           <LandingBenefits />
-          <LandingCta />
+          <LandingCta isAuthenticated={isAuthenticated} />
         </main>
         <LandingFooter />
       </div>

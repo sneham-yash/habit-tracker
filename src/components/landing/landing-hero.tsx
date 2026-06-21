@@ -4,11 +4,19 @@ import { RizenScoreHero } from "@/components/metrics";
 import { LandingReveal } from "@/components/landing/landing-reveal";
 import { LandingSection } from "@/components/landing/landing-section";
 import { Button } from "@/components/ui/button";
-import { LANDING_HERO, LANDING_METRICS } from "@/constants/landing";
+import {
+  LANDING_DASHBOARD_CTA,
+  LANDING_HERO,
+  LANDING_METRICS,
+} from "@/constants/landing";
 import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
-export function LandingHero() {
+type LandingHeroProps = {
+  isAuthenticated: boolean;
+};
+
+export function LandingHero({ isAuthenticated }: LandingHeroProps) {
   const { demoScore, demoMetrics } = LANDING_METRICS;
 
   return (
@@ -33,12 +41,20 @@ export function LandingHero() {
 
           <LandingReveal immediate variant="fade-up" delay={240}>
             <div className="flex flex-wrap items-center gap-3">
-              <Button size="lg" asChild>
-                <Link href="/signup">{LANDING_HERO.primaryCta}</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/login">{LANDING_HERO.secondaryCta}</Link>
-              </Button>
+              {isAuthenticated ? (
+                <Button size="lg" asChild>
+                  <Link href="/dashboard">{LANDING_DASHBOARD_CTA}</Link>
+                </Button>
+              ) : (
+                <>
+                  <Button size="lg" asChild>
+                    <Link href="/signup">{LANDING_HERO.primaryCta}</Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link href="/login">{LANDING_HERO.secondaryCta}</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </LandingReveal>
         </div>
