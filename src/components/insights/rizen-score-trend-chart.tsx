@@ -1,5 +1,8 @@
 "use client";
 
+import { LineChartIcon } from "lucide-react";
+
+import { MetricIconBadge } from "@/components/metrics";
 import {
   Card,
   CardContent,
@@ -67,14 +70,17 @@ export function RizenScoreTrendChart({ data }: RizenScoreTrendChartProps) {
   const yTicks = [0, 50, 100];
 
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <p className={typography.metricLabel}>Rizen Score Trend</p>
-        <p className={cn(typography.bodyMuted, "pt-1")}>
+    <Card className="gap-3 py-4">
+      <CardHeader className="gap-1 px-4 pb-0">
+        <div className="flex items-center gap-2">
+          <MetricIconBadge icon={LineChartIcon} tone="neutral" size="sm" />
+          <p className={typography.metricLabel}>Rizen Score Trend</p>
+        </div>
+        <p className={cn(typography.bodyMuted, "text-sm")}>
           Rolling 30-day score over time
         </p>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="px-4 pt-0">
         {data.length === 0 ? (
           <p className={typography.bodyMuted}>Not enough data yet.</p>
         ) : (

@@ -2,17 +2,13 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import {
-  ArrowLeftIcon,
-  BarChart3Icon,
-  FlameIcon,
-  FootprintsIcon,
-  LayersIcon,
-  LineChartIcon,
-  TargetIcon,
-  TrendingUpIcon,
-} from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 
+import {
+  MetricDefinitionCard,
+  MiniMetricTile,
+  ScoreRing,
+} from "@/components/metrics";
 import { WeightBarIllustration } from "@/components/tutorial/tutorial-illustrations";
 import {
   INSIGHTS_READINESS_NOTE,
@@ -21,6 +17,7 @@ import {
   METRICS_GUIDE_EXAMPLE_SCORE,
   METRICS_GUIDE_WEIGHTS,
 } from "@/components/tutorial/tutorial-content";
+import { METRIC_DEFINITION_KEYS } from "@/lib/analytics/metric-config";
 import {
   Card,
   CardContent,
@@ -28,18 +25,6 @@ import {
 } from "@/components/ui/card";
 import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
-
-const METRIC_ICONS = [
-  TargetIcon,
-  TrendingUpIcon,
-  TrendingUpIcon,
-  FlameIcon,
-  BarChart3Icon,
-  FootprintsIcon,
-  LayersIcon,
-  LayersIcon,
-  LineChartIcon,
-] as const;
 
 const BACK_LINKS = {
   insights: { href: "/insights", label: "Insights" },
@@ -76,7 +61,7 @@ export function MetricsGuidePage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Link
         href={backLink.href}
         className={cn(
@@ -95,15 +80,15 @@ export function MetricsGuidePage() {
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4 pb-0">
           <p className={typography.sectionTitle}>Rizen Score Formula</p>
           <p className={cn(typography.bodyMuted, "text-sm leading-relaxed")}>
             Your Rizen Score is a weighted blend of five factors from the last
             30 days, normalized to a 0–100 scale.
           </p>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 px-4">
           <WeightBarIllustration
             segments={METRICS_GUIDE_WEIGHTS.map((item) => ({
               label: item.label,
@@ -124,20 +109,42 @@ export function MetricsGuidePage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4 pb-0">
           <p className={typography.sectionTitle}>Worked Example</p>
           <p className={cn(typography.bodyMuted, "text-sm")}>
             Sample inputs and how they combine into a score.
           </p>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <ExampleStat label="Completion Rate" value="80%" />
-            <ExampleStat label="Current Streak" value="12 days" />
-            <ExampleStat label="Build Success" value="85%" />
-            <ExampleStat label="Quit Success" value="70%" />
-            <ExampleStat label="Growth Trend" value="+5%" className="col-span-2" />
+        <CardContent className="space-y-4 px-4">
+          <div className="grid grid-cols-2 gap-2">
+            <MiniMetricTile
+              metricKey="completionRate"
+              value="80%"
+              align="left"
+            />
+            <MiniMetricTile
+              metricKey="currentStreak"
+              value="12 days"
+              align="left"
+            />
+            <MiniMetricTile
+              metricKey="buildSuccess"
+              value="85%"
+              align="left"
+            />
+            <MiniMetricTile
+              metricKey="quitSuccess"
+              value="70%"
+              align="left"
+            />
+            <MiniMetricTile
+              metricKey="growthTrend"
+              value="+5%"
+              trendValue={0.05}
+              align="left"
+              className="col-span-2"
+            />
           </div>
 
           <div className="divide-border divide-y rounded-lg border">
@@ -154,40 +161,31 @@ export function MetricsGuidePage() {
             ))}
           </div>
 
-          <div className="bg-primary/5 flex items-center justify-between rounded-lg border border-primary/20 px-4 py-3">
-            <span className={typography.sectionTitle}>Rizen Score</span>
+          <div className="bg-primary/5 flex items-center justify-between gap-3 rounded-lg border border-primary/20 px-4 py-3">
+            <div className="flex items-center gap-3">
+              <ScoreRing score={METRICS_GUIDE_EXAMPLE_SCORE} size="sm" />
+              <span className={typography.sectionTitle}>Rizen Score</span>
+            </div>
             <span className={typography.metricValue}>{METRICS_GUIDE_EXAMPLE_SCORE}</span>
           </div>
         </CardContent>
       </Card>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <h2 className={typography.sectionTitle}>Individual Metrics</h2>
-        {METRIC_DEFINITIONS.map((metric, index) => {
-          const Icon = METRIC_ICONS[index] ?? TargetIcon;
-          return (
-            <Card key={metric.title}>
-              <CardHeader className="flex-row items-start gap-3 space-y-0 pb-2">
-                <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
-                  <Icon className="size-4" aria-hidden />
-                </div>
-                <div className="min-w-0 space-y-1">
-                  <p className={typography.bodyText}>{metric.title}</p>
-                  <p className={cn(typography.bodyMuted, "text-sm leading-relaxed")}>
-                    {metric.description}
-                  </p>
-                  <p className={cn(typography.metricLabel, "text-[10px]")}>
-                    {metric.window}
-                  </p>
-                </div>
-              </CardHeader>
-            </Card>
-          );
-        })}
+        {METRIC_DEFINITIONS.map((metric, index) => (
+          <MetricDefinitionCard
+            key={metric.title}
+            metricKey={METRIC_DEFINITION_KEYS[index] ?? "completionRate"}
+            title={metric.title}
+            description={metric.description}
+            window={metric.window}
+          />
+        ))}
       </div>
 
-      <Card className="border-dashed">
-        <CardContent className="pt-6">
+      <Card className="border-dashed py-4">
+        <CardContent className="px-4">
           <p className={cn(typography.bodyText, "font-medium")}>
             When do Insights unlock?
           </p>
@@ -196,23 +194,6 @@ export function MetricsGuidePage() {
           </p>
         </CardContent>
       </Card>
-    </div>
-  );
-}
-
-function ExampleStat({
-  label,
-  value,
-  className,
-}: {
-  label: string;
-  value: string;
-  className?: string;
-}) {
-  return (
-    <div className={cn("bg-muted/30 rounded-lg border px-3 py-2", className)}>
-      <p className={cn(typography.metricLabel, "text-[10px]")}>{label}</p>
-      <p className={typography.metricValueSm}>{value}</p>
     </div>
   );
 }

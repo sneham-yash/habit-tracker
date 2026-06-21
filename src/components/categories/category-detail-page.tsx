@@ -5,12 +5,12 @@ import { ArrowLeftIcon, PlusIcon } from "lucide-react";
 
 import { TodayHabitList } from "@/components/dashboard/today-habit-list";
 import { HabitIcon } from "@/components/icons/habit-icon";
+import { MiniMetricTile, ScoreRing } from "@/components/metrics";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardHeader,
 } from "@/components/ui/card";
 import { CATEGORY_TYPE_LABELS } from "@/constants/habits";
 import {
@@ -122,22 +122,47 @@ export function CategoryDetailPage({ categoryId }: CategoryDetailPageProps) {
         </div>
       </div>
 
-      <Card className="border-primary/20">
-        <CardHeader>
-          <p className={typography.metricLabel}>Category Score</p>
-          <p className={typography.metricValue}>
-            {analyticsLoading ? "…" : categoryScore}
-            <span className={cn(typography.bodyMuted, "ml-2 text-base font-normal")}>
-              / 100
-            </span>
-          </p>
-        </CardHeader>
-        <CardContent>
-          <p className={typography.bodyMuted}>
-            {analytics
-              ? `${Math.round(analytics.completion_rate)}% completion over the last 30 days`
-              : "Complete habits to build your score"}
-          </p>
+      <Card className="border-primary/20 gap-3 py-4">
+        <CardContent className="px-4">
+          <div className="flex items-center gap-4">
+            <ScoreRing
+              score={analyticsLoading ? 0 : categoryScore}
+              size="sm"
+            />
+            <div className="min-w-0 flex-1 space-y-0.5">
+              <p className={typography.metricLabel}>Category Score</p>
+              <p className={typography.metricValueSm}>
+                {analyticsLoading ? "…" : categoryScore}
+                <span
+                  className={cn(
+                    typography.bodyMuted,
+                    "ml-1.5 text-base font-normal",
+                  )}
+                >
+                  / 100
+                </span>
+              </p>
+              <p className={cn(typography.bodyMuted, "text-sm")}>
+                {analytics
+                  ? `${Math.round(analytics.completion_rate)}% completion over the last 30 days`
+                  : "Complete habits to build your score"}
+              </p>
+            </div>
+          </div>
+          {analytics ? (
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <MiniMetricTile
+                metricKey="completionRate"
+                value={`${Math.round(analytics.completion_rate)}%`}
+                align="left"
+              />
+              <MiniMetricTile
+                metricKey="currentStreak"
+                value={`${analytics.best_streak} days`}
+                align="left"
+              />
+            </div>
+          ) : null}
         </CardContent>
       </Card>
 

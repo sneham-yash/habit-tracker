@@ -1,15 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { InfoIcon } from "lucide-react";
 
+import {
+  CategoryInsightCard,
+  MiniMetricTile,
+  RizenScoreHero,
+} from "@/components/metrics";
+import { RizenScoreTrendChart } from "@/components/insights/rizen-score-trend-chart";
 import { APP_TAGLINE } from "@/constants/brand";
 import {
   Card,
   CardContent,
   CardHeader,
 } from "@/components/ui/card";
-import { RizenScoreTrendChart } from "@/components/insights/rizen-score-trend-chart";
 import { useInsights } from "@/hooks/use-insights";
 import { formatTransformation } from "@/lib/analytics/rizen-score";
 import { typography } from "@/lib/typography";
@@ -17,56 +21,11 @@ import { cn } from "@/lib/utils";
 
 const METRICS_GUIDE_FROM_INSIGHTS = "/settings/metrics-guide?from=insights";
 
-function MetricCard({
-  title,
-  value,
-  description,
-  prominent = false,
-  infoHref,
-}: {
-  title: string;
-  value: string | number;
-  description?: string;
-  prominent?: boolean;
-  infoHref?: string;
-}) {
-  return (
-    <Card>
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between gap-2">
-          <p className={typography.metricLabel}>{title}</p>
-          {infoHref ? (
-            <Link
-              href={infoHref}
-              className="text-muted-foreground hover:text-foreground shrink-0 rounded-sm p-0.5 transition-colors"
-              aria-label={`Learn how ${title} is calculated`}
-            >
-              <InfoIcon className="size-4" aria-hidden />
-            </Link>
-          ) : null}
-        </div>
-        <p
-          className={cn(
-            prominent ? typography.metricValue : typography.metricValueSm,
-          )}
-        >
-          {value}
-        </p>
-      </CardHeader>
-      {description ? (
-        <CardContent className={cn(typography.bodyMuted, "pt-0")}>
-          {description}
-        </CardContent>
-      ) : null}
-    </Card>
-  );
-}
-
 export function InsightsPage() {
   const { data, isLoading, error } = useInsights();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="space-y-1">
         <h1 className={typography.screenTitle}>Your Insights</h1>
         <p className={typography.screenSubtitle}>{APP_TAGLINE}</p>
@@ -110,49 +69,44 @@ export function InsightsPage() {
 
       {data?.isReady && (
         <>
-          <MetricCard
-            title="Rizen Score"
-            value={data.insights.rizenScore}
-            description="Recent performance over the last 30 days (0–100)"
-            prominent
-            infoHref={METRICS_GUIDE_FROM_INSIGHTS}
+          <RizenScoreHero
+            rizenScore={data.insights.rizenScore}
+            transformation={data.insights.transformation}
+            currentStreak={data.insights.currentStreak}
+            stepsForward={data.insights.stepsForward}
           />
 
-          <div className="grid grid-cols-2 gap-3">
-            <MetricCard
-              title="Transformation"
-              value={formatTransformation(data.insights.transformation)}
-              description="Compared to last month"
-            />
-            <MetricCard
-              title="Steps Forward"
-              value={data.insights.stepsForward}
-            />
-            <MetricCard
-              title="Current Streak"
-              value={`${data.insights.currentStreak} days`}
-            />
-            <MetricCard
-              title="Completion Rate"
+          <div className="grid grid-cols-2 gap-2">
+            <MiniMetricTile
+              metricKey="completionRate"
               value={`${data.insights.completionRate}%`}
+              align="left"
             />
-            <MetricCard
-              title="Build Score"
+            <MiniMetricTile
+              metricKey="buildScore"
               value={`${data.insights.buildScore}%`}
+              align="left"
             />
-            <MetricCard
-              title="Quit Score"
+            <MiniMetricTile
+              metricKey="quitScore"
               value={`${data.insights.quitScore}%`}
+              align="left"
+            />
+            <MiniMetricTile
+              metricKey="transformation"
+              value={formatTransformation(data.insights.transformation)}
+              trendValue={data.insights.transformation}
+              align="left"
             />
           </div>
 
-          <div className="space-y-3">
-            <MetricCard
-              title="Strongest Category"
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <CategoryInsightCard
+              metricKey="strongestCategory"
               value={data.insights.strongestCategoryName ?? "—"}
             />
-            <MetricCard
-              title="Needs Attention"
+            <CategoryInsightCard
+              metricKey="needsAttention"
               value={data.insights.needsAttentionCategoryName ?? "—"}
               description="A category where small steps can help most"
             />

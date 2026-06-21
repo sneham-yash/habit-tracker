@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SettingsIcon } from "lucide-react";
 import { useState } from "react";
 
+import { MiniMetricTile } from "@/components/metrics";
 import { AvatarEditor } from "@/components/profile/avatar-editor";
 import { EditProfileDialog } from "@/components/profile/edit-profile-dialog";
 import { Button } from "@/components/ui/button";
@@ -53,31 +54,28 @@ export function ProfilePage({
         </p>
       </div>
 
-      <Card>
-        <CardHeader className="pb-2">
+      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 via-background to-background gap-3 py-4">
+        <CardHeader className="px-4 pb-0">
           <CardTitle className="text-base">Your stats</CardTitle>
           <CardDescription>Recent performance over the last 30 days</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="space-y-1">
-              <p className={typography.metricValueSm}>
-                {insightsData?.insights.rizenScore ?? 0}
-              </p>
-              <p className={typography.metricLabel}>Rizen Score</p>
-            </div>
-            <div className="space-y-1">
-              <p className={typography.metricValueSm}>
-                {insightsData?.insights.stepsForward ?? 0}
-              </p>
-              <p className={typography.metricLabel}>Steps Forward</p>
-            </div>
-            <div className="space-y-1">
-              <p className={typography.metricValueSm}>
-                {insightsData?.insights.longestStreak ?? 0}
-              </p>
-              <p className={typography.metricLabel}>Longest Streak</p>
-            </div>
+        <CardContent className="px-4">
+          <div className="grid grid-cols-3 gap-2">
+            <MiniMetricTile
+              metricKey="rizenScore"
+              value={insightsData?.insights.rizenScore ?? 0}
+              align="center"
+            />
+            <MiniMetricTile
+              metricKey="stepsForward"
+              value={insightsData?.insights.stepsForward ?? 0}
+              align="center"
+            />
+            <MiniMetricTile
+              metricKey="longestStreak"
+              value={insightsData?.insights.longestStreak ?? 0}
+              align="center"
+            />
           </div>
         </CardContent>
       </Card>

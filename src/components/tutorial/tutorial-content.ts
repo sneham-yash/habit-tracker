@@ -44,9 +44,9 @@ export const ONBOARDING_STEPS = [
     ],
     previewScore: 72,
     previewMetrics: [
-      { label: "Completion", value: "85%" },
-      { label: "Streak", value: "12", unit: "days" },
-      { label: "Growth", value: "+5%" },
+      { metricKey: "completionRate" as const, value: "85%" },
+      { metricKey: "currentStreak" as const, value: "12", unit: "days" },
+      { metricKey: "growthTrend" as const, value: "+5%", trendValue: 0.05 },
     ],
   },
 ] as const;

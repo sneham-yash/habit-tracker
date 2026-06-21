@@ -53,7 +53,7 @@ export function TutorialHubPage() {
         </p>
       </div>
 
-      <Card>
+      <Card className="gap-0 py-0">
         <CardContent className="divide-border divide-y p-0">
           {tutorialItems.map((item) => {
             const Icon = item.icon;
@@ -64,7 +64,7 @@ export function TutorialHubPage() {
                   key={item.id}
                   type="button"
                   onClick={() => setReplayOpen(true)}
-                  className="hover:bg-muted/50 flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors"
+                  className="hover:bg-muted/50 flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors"
                 >
                   <Icon className="text-muted-foreground size-5 shrink-0" aria-hidden />
                   <div className="min-w-0 flex-1">
@@ -85,7 +85,7 @@ export function TutorialHubPage() {
               <Link
                 key={item.id}
                 href={item.href}
-                className="hover:bg-muted/50 flex items-center gap-3 px-4 py-3.5 transition-colors"
+                className="hover:bg-muted/50 flex items-center gap-3 px-4 py-2.5 transition-colors"
               >
                 <Icon className="text-muted-foreground size-5 shrink-0" aria-hidden />
                 <div className="min-w-0 flex-1">

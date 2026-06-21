@@ -4,8 +4,10 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   FolderOpenIcon,
-  TrendingUpIcon,
 } from "lucide-react";
+
+import { MiniMetricTile, ScoreRing } from "@/components/metrics";
+import type { MetricKey } from "@/lib/analytics/metric-config";
 
 import { HABIT_TYPE_OPTIONS } from "@/constants/habits";
 import { typography } from "@/lib/typography";
@@ -115,7 +117,12 @@ function CategoryGroup({
 
 type MetricsPreviewIllustrationProps = {
   score: number;
-  metrics: readonly { label: string; value: string; unit?: string }[];
+  metrics: readonly {
+    metricKey: MetricKey;
+    value: string;
+    unit?: string;
+    trendValue?: number;
+  }[];
   className?: string;
 };
 
@@ -124,41 +131,10 @@ export function MetricsPreviewIllustration({
   metrics,
   className,
 }: MetricsPreviewIllustrationProps) {
-  const radius = 28;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (score / 100) * circumference;
-
   return (
     <div className={cn("space-y-3", className)}>
       <div className="bg-primary/5 flex items-center gap-4 rounded-lg border border-primary/20 p-4">
-        <div className="relative size-20 shrink-0">
-          <svg className="size-20 -rotate-90" viewBox="0 0 72 72" aria-hidden>
-            <circle
-              cx="36"
-              cy="36"
-              r={radius}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="5"
-              className="text-muted"
-            />
-            <circle
-              cx="36"
-              cy="36"
-              r={radius}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="5"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={offset}
-              className="text-primary"
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className={typography.metricValueSm}>{score}</span>
-          </div>
-        </div>
+        <ScoreRing score={score} size="md" />
         <div className="min-w-0 space-y-0.5">
           <p className={cn(typography.sectionTitle, "text-base")}>
             Rizen Score
@@ -166,29 +142,22 @@ export function MetricsPreviewIllustration({
           <p className={cn(typography.bodyMuted, "text-xs")}>
             Last 30 days · 0–100
           </p>
-          <div className="text-primary flex items-center gap-1 pt-1">
-            <TrendingUpIcon className="size-3.5" aria-hidden />
-            <span className="text-xs font-medium">Insights preview</span>
-          </div>
+          <p className="text-primary pt-1 text-xs font-medium">
+            Insights preview
+          </p>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-2">
         {metrics.map((metric) => (
-          <div
-            key={metric.label}
-            className="bg-muted/30 flex min-h-[4.5rem] flex-col items-center justify-center rounded-lg border px-2 py-2 text-center"
-          >
-            <p className={typography.metricValueSm}>{metric.value}</p>
-            {metric.unit ? (
-              <p className={cn(typography.bodyMuted, "text-[10px]")}>
-                {metric.unit}
-              </p>
-            ) : null}
-            <p className={cn(typography.metricLabel, "text-[10px]")}>
-              {metric.label}
-            </p>
-          </div>
+          <MiniMetricTile
+            key={metric.metricKey}
+            metricKey={metric.metricKey}
+            value={metric.value}
+            unit={metric.unit}
+            trendValue={metric.trendValue}
+            align="center"
+          />
         ))}
       </div>
     </div>

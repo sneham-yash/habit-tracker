@@ -75,7 +75,7 @@ export function SettingsPage() {
         <p className={typography.screenSubtitle}>Configuration</p>
       </div>
 
-      <Card>
+      <Card className="gap-0 py-0">
         <CardContent className="divide-border divide-y p-0">
           {settingsItems.map((item) => {
             const Icon = item.icon;
@@ -83,7 +83,7 @@ export function SettingsPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="hover:bg-muted/50 flex items-center gap-3 px-4 py-3.5 transition-colors"
+                className="hover:bg-muted/50 flex items-center gap-3 px-4 py-2.5 transition-colors"
               >
                 <Icon className="text-muted-foreground size-5 shrink-0" aria-hidden />
                 <div className="min-w-0 flex-1">
