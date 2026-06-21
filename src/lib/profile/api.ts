@@ -32,6 +32,7 @@ export async function fetchProfile(): Promise<Profile | null> {
 export async function updateProfile(values: {
   display_name?: string | null;
   avatar_url?: string | null;
+  onboarding_completed_at?: string | null;
 }): Promise<Profile> {
   const supabase = createClient();
   const {
@@ -55,6 +56,10 @@ export async function updateProfile(values: {
   }
 
   return data as Profile;
+}
+
+export async function completeOnboarding(): Promise<Profile> {
+  return updateProfile({ onboarding_completed_at: new Date().toISOString() });
 }
 
 function getAvatarExtension(file: File): string {

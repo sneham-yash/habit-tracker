@@ -6,6 +6,7 @@ import {
   ChevronRightIcon,
   DownloadIcon,
   FolderOpenIcon,
+  GraduationCapIcon,
   InfoIcon,
   ListChecksIcon,
   LogOutIcon,
@@ -22,6 +23,12 @@ import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
 const settingsItems = [
+  {
+    href: "/settings/tutorial",
+    label: "Tutorial",
+    description: "Learn the app and how metrics work",
+    icon: GraduationCapIcon,
+  },
   {
     href: "/settings/manage-habits",
     label: "Manage Habits",

@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 import {
+  completeOnboarding,
   fetchProfile,
   removeAvatar,
   updateProfile,
@@ -51,6 +52,19 @@ export function useRemoveAvatar() {
 
   return useMutation({
     mutationFn: () => removeAvatar(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: profileKeys.all });
+      router.refresh();
+    },
+  });
+}
+
+export function useCompleteOnboarding() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: () => completeOnboarding(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.all });
       router.refresh();

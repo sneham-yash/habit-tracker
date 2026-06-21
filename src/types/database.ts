@@ -27,6 +27,7 @@ export type Database = {
           display_name: string | null;
           avatar_url: string | null;
           timezone: string;
+          onboarding_completed_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -35,6 +36,7 @@ export type Database = {
           display_name?: string | null;
           avatar_url?: string | null;
           timezone?: string;
+          onboarding_completed_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -43,6 +45,7 @@ export type Database = {
           display_name?: string | null;
           avatar_url?: string | null;
           timezone?: string;
+          onboarding_completed_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };

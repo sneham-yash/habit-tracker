@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link";
+import { InfoIcon } from "lucide-react";
+
 import { APP_TAGLINE } from "@/constants/brand";
 import {
   Card,
@@ -12,21 +15,36 @@ import { formatTransformation } from "@/lib/analytics/rizen-score";
 import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
+const METRICS_GUIDE_FROM_INSIGHTS = "/settings/metrics-guide?from=insights";
+
 function MetricCard({
   title,
   value,
   description,
   prominent = false,
+  infoHref,
 }: {
   title: string;
   value: string | number;
   description?: string;
   prominent?: boolean;
+  infoHref?: string;
 }) {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <p className={typography.metricLabel}>{title}</p>
+        <div className="flex items-start justify-between gap-2">
+          <p className={typography.metricLabel}>{title}</p>
+          {infoHref ? (
+            <Link
+              href={infoHref}
+              className="text-muted-foreground hover:text-foreground shrink-0 rounded-sm p-0.5 transition-colors"
+              aria-label={`Learn how ${title} is calculated`}
+            >
+              <InfoIcon className="size-4" aria-hidden />
+            </Link>
+          ) : null}
+        </div>
         <p
           className={cn(
             prominent ? typography.metricValue : typography.metricValueSm,
@@ -52,6 +70,15 @@ export function InsightsPage() {
       <div className="space-y-1">
         <h1 className={typography.screenTitle}>Your Insights</h1>
         <p className={typography.screenSubtitle}>{APP_TAGLINE}</p>
+        <Link
+          href={METRICS_GUIDE_FROM_INSIGHTS}
+          className={cn(
+            typography.bodyText,
+            "text-primary inline-block text-sm font-medium hover:underline",
+          )}
+        >
+          How are these metrics calculated?
+        </Link>
       </div>
 
       {isLoading && (
@@ -88,6 +115,7 @@ export function InsightsPage() {
             value={data.insights.rizenScore}
             description="Recent performance over the last 30 days (0–100)"
             prominent
+            infoHref={METRICS_GUIDE_FROM_INSIGHTS}
           />
 
           <div className="grid grid-cols-2 gap-3">
