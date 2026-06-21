@@ -26,7 +26,7 @@ export function LandingNav({ isAuthenticated }: LandingNavProps) {
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <ThemeModePicker className="hidden sm:flex" />
+            <ThemeModePicker />
             {isAuthenticated ? (
               <Button size="sm" asChild>
                 <Link href="/dashboard">{LANDING_DASHBOARD_CTA}</Link>

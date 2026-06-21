@@ -7,7 +7,8 @@ import {
   SunIcon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 import { typography } from "@/lib/typography";
@@ -119,6 +120,9 @@ type ThemeModePickerProps = {
   variant?: "popover" | "inline";
 };
 
+const VIEWPORT_PADDING = 16;
+const POPOVER_WIDTH = 240;
+
 export function ThemeModePicker({
   className,
   variant = "popover",
@@ -126,22 +130,84 @@ export function ThemeModePicker({
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
+  const [popoverStyle, setPopoverStyle] = useState<React.CSSProperties>({});
   const containerRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  const triggerClassName =
+    "border-border/60 bg-background/60 text-muted-foreground hover:text-foreground size-8 rounded-full shadow-sm backdrop-blur-md transition-all sm:size-9";
+
+  const updatePopoverPosition = useCallback(() => {
+    const container = containerRef.current;
+    const popover = popoverRef.current;
+    if (!container || !popover) return;
+
+    const triggerRect = container.getBoundingClientRect();
+    const popoverWidth =
+      popover.getBoundingClientRect().width || popover.offsetWidth || POPOVER_WIDTH;
+    const maxLeft = window.innerWidth - VIEWPORT_PADDING - popoverWidth;
+
+    let left = triggerRect.right - popoverWidth;
+    left = Math.max(VIEWPORT_PADDING, Math.min(left, maxLeft));
+
+    setPopoverStyle({
+      position: "fixed",
+      top: triggerRect.bottom + 8,
+      left,
+      visibility: "visible",
+    });
+  }, []);
+
+  const handlePopoverRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      popoverRef.current = node;
+      if (node) {
+        updatePopoverPosition();
+      }
+    },
+    [updatePopoverPosition],
+  );
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useLayoutEffect(() => {
+    if (!open || variant === "inline") {
+      setPopoverStyle({});
+      return;
+    }
+
+    const popover = popoverRef.current;
+    const resizeObserver =
+      popover && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(updatePopoverPosition)
+        : null;
+    resizeObserver?.observe(popover!);
+
+    window.addEventListener("resize", updatePopoverPosition);
+    window.addEventListener("scroll", updatePopoverPosition, true);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", updatePopoverPosition);
+      window.removeEventListener("scroll", updatePopoverPosition, true);
+    };
+  }, [open, variant, updatePopoverPosition]);
+
   useEffect(() => {
     if (!open || variant === "inline") return;
 
     function handlePointerDown(event: MouseEvent) {
+      const target = event.target as Node;
       if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        containerRef.current?.contains(target) ||
+        popoverRef.current?.contains(target)
       ) {
-        setOpen(false);
+        return;
       }
+
+      setOpen(false);
     }
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -170,7 +236,7 @@ export function ThemeModePicker({
           type="button"
           variant="outline"
           size="icon"
-          className="border-border/60 bg-background/60 size-10 rounded-full shadow-sm backdrop-blur-md"
+          className={triggerClassName}
           disabled
           aria-label="Choose appearance"
         />
@@ -214,7 +280,7 @@ export function ThemeModePicker({
         variant="outline"
         size="icon"
         className={cn(
-          "border-border/60 bg-background/60 text-muted-foreground hover:text-foreground size-10 rounded-full shadow-sm backdrop-blur-md transition-all",
+          triggerClassName,
           open && "border-primary/30 bg-background text-foreground ring-primary/20 ring-2",
         )}
         onClick={() => setOpen((current) => !current)}
@@ -222,24 +288,29 @@ export function ThemeModePicker({
         aria-expanded={open}
         aria-haspopup="listbox"
       >
-        <TriggerIcon className="size-4" />
+        <TriggerIcon className="size-3.5 sm:size-4" />
       </Button>
 
-      {open && (
-        <div
-          role="listbox"
-          aria-label="Appearance modes"
-          className={cn(
-            "border-border/60 bg-background/95 absolute top-full right-0 z-50 mt-2 w-60 overflow-hidden rounded-xl border p-2 shadow-lg backdrop-blur-xl",
-            "motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 motion-safe:duration-200",
-          )}
-        >
-          <ThemeModeOptions
-            activeTheme={activeTheme}
-            onSelect={handleSelect}
-          />
-        </div>
-      )}
+      {open &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={handlePopoverRef}
+            role="listbox"
+            aria-label="Appearance modes"
+            style={{ visibility: "hidden", ...popoverStyle }}
+            className={cn(
+              "border-border/60 bg-background/95 z-[100] w-[min(15rem,calc(100vw-2rem))] overflow-hidden rounded-xl border p-2 shadow-lg backdrop-blur-xl",
+              "motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 motion-safe:duration-200",
+            )}
+          >
+            <ThemeModeOptions
+              activeTheme={activeTheme}
+              onSelect={handleSelect}
+            />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
