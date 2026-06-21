@@ -18,6 +18,7 @@ type RizenScoreHeroProps = {
   currentStreak: number;
   stepsForward: number;
   children?: ReactNode;
+  showTagline?: boolean;
   className?: string;
 };
 
@@ -27,6 +28,7 @@ export function RizenScoreHero({
   currentStreak,
   stepsForward,
   children,
+  showTagline = true,
   className,
 }: RizenScoreHeroProps) {
   return (
@@ -55,9 +57,15 @@ export function RizenScoreHero({
           <ScoreRing score={rizenScore} size="lg" />
           <div className="min-w-0 flex-1 space-y-0.5">
             <h2 className={typography.sectionTitle}>Rizen Score</h2>
-            <p className={cn(typography.bodyText, "text-primary font-medium")}>
-              {APP_TAGLINE}
-            </p>
+            {showTagline ? (
+              <p className={cn(typography.bodyText, "text-primary font-medium")}>
+                {APP_TAGLINE}
+              </p>
+            ) : (
+              <p className={cn(typography.bodyMuted, "text-sm")}>
+                Last 30 days · 0–100
+              </p>
+            )}
           </div>
         </div>
 

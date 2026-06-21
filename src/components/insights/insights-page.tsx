@@ -1,14 +1,12 @@
 "use client";
 
-import Link from "next/link";
-
 import {
   CategoryInsightCard,
   MiniMetricTile,
   RizenScoreHero,
 } from "@/components/metrics";
+import { InsightsPageHeader } from "@/components/insights/insights-page-header";
 import { RizenScoreTrendChart } from "@/components/insights/rizen-score-trend-chart";
-import { APP_TAGLINE } from "@/constants/brand";
 import {
   Card,
   CardContent,
@@ -26,19 +24,7 @@ export function InsightsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="space-y-1">
-        <h1 className={typography.screenTitle}>Your Insights</h1>
-        <p className={typography.screenSubtitle}>{APP_TAGLINE}</p>
-        <Link
-          href={METRICS_GUIDE_FROM_INSIGHTS}
-          className={cn(
-            typography.bodyText,
-            "text-primary inline-block text-sm font-medium hover:underline",
-          )}
-        >
-          How are these metrics calculated?
-        </Link>
-      </div>
+      <InsightsPageHeader metricsGuideHref={METRICS_GUIDE_FROM_INSIGHTS} />
 
       {isLoading && (
         <p className={typography.bodyMuted}>Loading insights…</p>
@@ -74,6 +60,7 @@ export function InsightsPage() {
             transformation={data.insights.transformation}
             currentStreak={data.insights.currentStreak}
             stepsForward={data.insights.stepsForward}
+            showTagline={false}
           />
 
           <div className="grid grid-cols-2 gap-2">
