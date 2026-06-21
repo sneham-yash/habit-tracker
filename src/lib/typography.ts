@@ -20,6 +20,14 @@ export const typography = {
     "font-display text-[1.625rem] font-semibold tracking-tight leading-tight text-foreground",
   authTagline:
     "font-display text-sm font-medium tracking-wide text-primary",
+  landingHeadline:
+    "font-display text-4xl font-semibold tracking-tight leading-[1.1] text-foreground md:text-5xl lg:text-6xl",
+  landingSectionTitle:
+    "font-display text-3xl font-semibold tracking-tight text-foreground md:text-4xl",
+  landingLead:
+    "font-sans text-lg leading-relaxed text-muted-foreground md:text-xl",
+  landingEyebrow:
+    "font-display text-xs font-medium uppercase tracking-[0.2em] text-primary",
 } as const;
 
 export function formatDisplayName(name: string): string {
