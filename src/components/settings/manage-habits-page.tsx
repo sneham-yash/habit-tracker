@@ -2,17 +2,28 @@
 
 import Link from "next/link";
 import { ArrowLeftIcon, PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
+import { HabitFilterTabs } from "@/components/dashboard/habit-filter-tabs";
 import { ArchiveHabitDialog } from "@/components/habits/archive-habit-dialog";
 import { DeleteHabitDialog } from "@/components/habits/delete-habit-dialog";
 import { HabitFormDialog } from "@/components/habits/habit-form-dialog";
 import { HabitList } from "@/components/habits/habit-list";
 import { Button } from "@/components/ui/button";
+import type { HabitFilterTab } from "@/constants/habits";
 import { useHabits } from "@/hooks/use-habits";
+import {
+  filterHabitsByTab,
+  getHabitTabCounts,
+} from "@/lib/habits/filter";
 import { typography } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 import type { Habit } from "@/types/database";
+
+const FILTER_EMPTY_MESSAGES: Record<Exclude<HabitFilterTab, "all">, string> = {
+  build: "No build habits yet.",
+  quit: "No quit habits yet.",
+};
 
 export function ManageHabitsPage() {
   const { data: habits, isLoading, error } = useHabits();
@@ -20,6 +31,15 @@ export function ManageHabitsPage() {
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedHabit, setSelectedHabit] = useState<Habit | undefined>();
+  const [filterTab, setFilterTab] = useState<HabitFilterTab>("all");
+
+  const allHabits = habits ?? [];
+  const tabCounts = useMemo(() => getHabitTabCounts(allHabits), [allHabits]);
+  const filteredHabits = useMemo(
+    () => filterHabitsByTab(allHabits, filterTab),
+    [allHabits, filterTab],
+  );
+  const hasHabits = allHabits.length > 0;
 
   function openCreateDialog() {
     setSelectedHabit(undefined);
@@ -42,7 +62,7 @@ export function ManageHabitsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Link
         href="/settings"
         className={cn(
@@ -54,17 +74,23 @@ export function ManageHabitsPage() {
         Settings
       </Link>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
           <h1 className={typography.screenTitle}>Manage Habits</h1>
           <p className={typography.screenSubtitle}>
             Edit, archive, or delete your habits.
           </p>
+          {hasHabits ? (
+            <p className={typography.metricLabel}>
+              {allHabits.length}{" "}
+              {allHabits.length === 1 ? "habit" : "habits"}
+            </p>
+          ) : null}
         </div>
 
-        <Button onClick={openCreateDialog}>
+        <Button size="icon" variant="outline" onClick={openCreateDialog}>
           <PlusIcon />
-          New habit
+          <span className="sr-only">New habit</span>
         </Button>
       </div>
 
@@ -78,27 +104,43 @@ export function ManageHabitsPage() {
         </p>
       )}
 
-      {!isLoading && !error && habits?.length === 0 && (
-        <div className="rounded-xl border border-dashed p-8 text-center">
+      {!isLoading && !error && hasHabits ? (
+        <HabitFilterTabs
+          value={filterTab}
+          onChange={setFilterTab}
+          counts={tabCounts}
+        />
+      ) : null}
+
+      {!isLoading && !error && !hasHabits ? (
+        <div className="rounded-xl border border-dashed p-6 text-center">
           <p className={typography.bodyText}>No habits yet</p>
           <p className={cn(typography.bodyMuted, "mt-1")}>
-            Create your first habit to get started.
+            Create your first build or quit habit to get started.
           </p>
-          <Button className="mt-4" onClick={openCreateDialog}>
+          <Button className="mt-4" size="sm" onClick={openCreateDialog}>
             <PlusIcon />
             Create habit
           </Button>
         </div>
-      )}
+      ) : null}
 
-      {!isLoading && !error && habits && habits.length > 0 && (
+      {!isLoading && !error && hasHabits && filteredHabits.length === 0 ? (
+        <p className={cn(typography.bodyMuted, "text-center py-6")}>
+          {filterTab === "all"
+            ? "No habits match this filter."
+            : FILTER_EMPTY_MESSAGES[filterTab]}
+        </p>
+      ) : null}
+
+      {!isLoading && !error && filteredHabits.length > 0 ? (
         <HabitList
-          habits={habits}
+          habits={filteredHabits}
           onEdit={openEditDialog}
           onArchive={openArchiveDialog}
           onDelete={openDeleteDialog}
         />
-      )}
+      ) : null}
 
       <HabitFormDialog
         open={formOpen}

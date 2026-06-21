@@ -7,14 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { formatDisplayDate } from "@/lib/dates";
 import { formatFrequencyLabel } from "@/lib/habits/constants";
-import { typography } from "@/lib/typography";
 import type { Habit } from "@/types/database";
+import { cn } from "@/lib/utils";
 
 type HabitListProps = {
   habits: Habit[];
@@ -23,54 +23,90 @@ type HabitListProps = {
   onDelete: (habit: Habit) => void;
 };
 
+function getHabitSubtitle(habit: Habit): string {
+  const frequency = formatFrequencyLabel(
+    habit.frequency,
+    habit.frequency_days,
+  );
+  const started = formatDisplayDate(habit.start_date, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  if (habit.description && habit.description.length <= 48) {
+    return habit.description;
+  }
+
+  return `${frequency} · Started ${started}`;
+}
+
 export function HabitList({ habits, onEdit, onArchive, onDelete }: HabitListProps) {
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-2">
       {habits.map((habit) => {
         const habitType = habit.habit_type ?? "build";
+        const subtitle = getHabitSubtitle(habit);
 
         return (
-          <Card key={habit.id}>
-            <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
-              <div className="flex min-w-0 items-start gap-3">
-                <HabitIcon
-                  icon={habit.icon}
-                  habitType={habitType}
-                  size="md"
-                />
-                <div className="min-w-0 space-y-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <CardTitle className="truncate">{habit.name}</CardTitle>
-                    <Badge variant="secondary" className="text-xs">
-                      {habitType === "build" ? "Build" : "Quit"}
-                    </Badge>
-                  </div>
-                  {habit.description && (
-                    <CardDescription>{habit.description}</CardDescription>
-                  )}
+          <Card
+            key={habit.id}
+            className={cn(
+              "gap-0 py-0 shadow-none",
+              habitType === "build" ? "border-primary/15" : undefined,
+            )}
+          >
+            <CardHeader className="flex-row items-center gap-3 space-y-0 px-4 py-3">
+              <HabitIcon
+                icon={habit.icon}
+                habitType={habitType}
+                size="sm"
+                className="shrink-0"
+              />
+
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <div className="flex min-w-0 items-center gap-2">
+                  <CardTitle
+                    className="min-w-0 flex-1 truncate text-base"
+                    title={habit.name}
+                  >
+                    {habit.name}
+                  </CardTitle>
+                  <Badge
+                    variant={habitType === "build" ? "default" : "secondary"}
+                    className="shrink-0 text-xs"
+                  >
+                    {habitType === "build" ? "Build" : "Quit"}
+                  </Badge>
                 </div>
+                <CardDescription className="truncate" title={subtitle}>
+                  {subtitle}
+                </CardDescription>
               </div>
 
-              <div className="flex shrink-0 gap-1">
+              <div className="flex shrink-0 items-center gap-0.5">
                 <Button
-                  variant="outline"
-                  size="icon"
+                  variant="ghost"
+                  size="sm"
+                  className="size-8 px-0"
                   onClick={() => onEdit(habit)}
                   aria-label={`Edit ${habit.name}`}
                 >
                   <PencilIcon />
                 </Button>
                 <Button
-                  variant="outline"
-                  size="icon"
+                  variant="ghost"
+                  size="sm"
+                  className="size-8 px-0"
                   onClick={() => onArchive(habit)}
                   aria-label={`Archive ${habit.name}`}
                 >
                   <ArchiveIcon />
                 </Button>
                 <Button
-                  variant="outline"
-                  size="icon"
+                  variant="ghost"
+                  size="sm"
+                  className="size-8 px-0"
                   onClick={() => onDelete(habit)}
                   aria-label={`Delete ${habit.name} permanently`}
                 >
@@ -78,15 +114,6 @@ export function HabitList({ habits, onEdit, onArchive, onDelete }: HabitListProp
                 </Button>
               </div>
             </CardHeader>
-
-            <CardContent className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary">
-                {formatFrequencyLabel(habit.frequency, habit.frequency_days)}
-              </Badge>
-              <span className={typography.bodyMuted}>
-                Started {habit.start_date}
-              </span>
-            </CardContent>
           </Card>
         );
       })}
