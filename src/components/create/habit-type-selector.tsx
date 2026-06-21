@@ -44,13 +44,13 @@ export function HabitTypeSelector({
             >
               <Card
                 className={cn(
-                  "transition-colors",
+                  "gap-0 py-0 transition-colors",
                   isSelected
                     ? "border-primary ring-primary/20 ring-2"
                     : "hover:border-primary/40",
                 )}
               >
-                <CardHeader className="flex-row items-start gap-3 py-4">
+                <CardHeader className="flex-row items-start gap-3 px-4 py-3">
                   <div
                     className={cn(
                       "flex size-10 shrink-0 items-center justify-center rounded-lg",

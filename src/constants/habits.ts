@@ -15,7 +15,7 @@ export const HABIT_TYPE_OPTIONS: {
     value: "quit",
     label: "Quit Habit",
     description:
-      "Break negative patterns like smoking, junk food, or social media.",
+      "Break negative patterns like substances, screen time, impulse spending, or late-night snacking.",
   },
 ];
 

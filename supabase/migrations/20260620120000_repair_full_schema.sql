@@ -50,10 +50,12 @@ FROM (VALUES
   ('Mindfulness', 'build', 'leaf'),
   ('Finance', 'build', 'dollar-sign'),
   ('Personal Growth', 'build', 'book-open'),
-  ('Smoking', 'quit', 'cigarette-off'),
-  ('Alcohol', 'quit', 'wine'),
-  ('Junk Food', 'quit', 'hamburger'),
-  ('Social Media', 'quit', 'smartphone')
+  ('Substance', 'quit', 'cigarette-off'),
+  ('Food & Nutrition', 'quit', 'hamburger'),
+  ('Digital', 'quit', 'smartphone'),
+  ('Financial', 'quit', 'dollar-sign'),
+  ('Lifestyle', 'quit', 'moon'),
+  ('Mental Wellness', 'quit', 'brain')
 ) AS v(name, category_type, icon)
 WHERE NOT EXISTS (SELECT 1 FROM public.categories LIMIT 1);
 
@@ -76,28 +78,128 @@ WHERE user_id IS NULL AND name = 'Learning' AND category_type = 'build';
 UPDATE public.categories SET icon = 'dollar-sign'
 WHERE user_id IS NULL AND name = 'Finance' AND category_type = 'build';
 
-UPDATE public.categories SET icon = 'cigarette-off'
-WHERE user_id IS NULL AND name = 'Smoking' AND category_type = 'quit';
+-- Quit category defaults migration (idempotent)
+INSERT INTO public.categories (user_id, name, category_type, is_default, icon)
+SELECT NULL, v.name, 'quit'::public.category_type, true, v.icon
+FROM (VALUES
+  ('Substance', 'cigarette-off'),
+  ('Food & Nutrition', 'hamburger'),
+  ('Digital', 'smartphone'),
+  ('Financial', 'dollar-sign'),
+  ('Lifestyle', 'moon'),
+  ('Mental Wellness', 'brain')
+) AS v(name, icon)
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.categories c
+  WHERE c.user_id IS NULL
+    AND c.name = v.name
+    AND c.category_type = 'quit'
+);
 
-UPDATE public.categories SET icon = 'wine'
-WHERE user_id IS NULL AND name = 'Alcohol' AND category_type = 'quit';
-
-UPDATE public.categories SET icon = 'hamburger'
-WHERE user_id IS NULL AND name = 'Junk Food' AND category_type = 'quit';
-
-UPDATE public.categories SET icon = 'smartphone'
-WHERE user_id IS NULL AND name = 'Social Media' AND category_type = 'quit';
-
--- Merge legacy Sugar category into Junk Food if present
 UPDATE public.habits h
-SET category_id = junk.id
-FROM public.categories sugar, public.categories junk
-WHERE h.category_id = sugar.id
-  AND sugar.user_id IS NULL AND sugar.name = 'Sugar' AND sugar.category_type = 'quit'
-  AND junk.user_id IS NULL AND junk.name = 'Junk Food' AND junk.category_type = 'quit';
+SET category_id = substance.id
+FROM public.categories old_cat, public.categories substance
+WHERE h.category_id = old_cat.id
+  AND old_cat.user_id IS NULL
+  AND old_cat.category_type = 'quit'
+  AND old_cat.name IN ('Smoking', 'Alcohol')
+  AND substance.user_id IS NULL
+  AND substance.name = 'Substance'
+  AND substance.category_type = 'quit';
+
+UPDATE public.habits h
+SET category_id = food.id
+FROM public.categories old_cat, public.categories food
+WHERE h.category_id = old_cat.id
+  AND old_cat.user_id IS NULL
+  AND old_cat.category_type = 'quit'
+  AND old_cat.name IN ('Junk Food', 'Sugar')
+  AND food.user_id IS NULL
+  AND food.name = 'Food & Nutrition'
+  AND food.category_type = 'quit';
+
+UPDATE public.habits h
+SET category_id = digital.id
+FROM public.categories old_cat, public.categories digital
+WHERE h.category_id = old_cat.id
+  AND old_cat.user_id IS NULL
+  AND old_cat.category_type = 'quit'
+  AND old_cat.name = 'Social Media'
+  AND digital.user_id IS NULL
+  AND digital.name = 'Digital'
+  AND digital.category_type = 'quit';
+
+UPDATE public.habits h
+SET category_id = substance.id
+FROM public.categories old_cat, public.categories substance
+WHERE h.category_id = old_cat.id
+  AND old_cat.user_id IS NULL
+  AND old_cat.category_type = 'quit'
+  AND old_cat.name = 'Health & Body'
+  AND substance.user_id IS NULL
+  AND substance.name = 'Substance'
+  AND substance.category_type = 'quit';
+
+UPDATE public.habits h
+SET category_id = digital.id
+FROM public.categories old_cat, public.categories digital
+WHERE h.category_id = old_cat.id
+  AND old_cat.user_id IS NULL
+  AND old_cat.category_type = 'quit'
+  AND old_cat.name = 'Digital & Screen'
+  AND digital.user_id IS NULL
+  AND digital.name = 'Digital'
+  AND digital.category_type = 'quit';
+
+UPDATE public.habits h
+SET category_id = financial.id
+FROM public.categories old_cat, public.categories financial
+WHERE h.category_id = old_cat.id
+  AND old_cat.user_id IS NULL
+  AND old_cat.category_type = 'quit'
+  AND old_cat.name = 'Spending & Money'
+  AND financial.user_id IS NULL
+  AND financial.name = 'Financial'
+  AND financial.category_type = 'quit';
+
+UPDATE public.habits h
+SET category_id = lifestyle.id
+FROM public.categories old_cat, public.categories lifestyle
+WHERE h.category_id = old_cat.id
+  AND old_cat.user_id IS NULL
+  AND old_cat.category_type = 'quit'
+  AND old_cat.name = 'Sleep & Energy'
+  AND lifestyle.user_id IS NULL
+  AND lifestyle.name = 'Lifestyle'
+  AND lifestyle.category_type = 'quit';
+
+UPDATE public.habits h
+SET category_id = mental.id
+FROM public.categories old_cat, public.categories mental
+WHERE h.category_id = old_cat.id
+  AND old_cat.user_id IS NULL
+  AND old_cat.category_type = 'quit'
+  AND old_cat.name IN ('Mind & Mood', 'Focus & Productivity')
+  AND mental.user_id IS NULL
+  AND mental.name = 'Mental Wellness'
+  AND mental.category_type = 'quit';
 
 DELETE FROM public.categories
-WHERE user_id IS NULL AND name = 'Sugar' AND category_type = 'quit';
+WHERE user_id IS NULL
+  AND category_type = 'quit'
+  AND name IN (
+    'Smoking',
+    'Alcohol',
+    'Junk Food',
+    'Social Media',
+    'Sugar',
+    'Health & Body',
+    'Digital & Screen',
+    'Spending & Money',
+    'Sleep & Energy',
+    'Mind & Mood',
+    'Focus & Productivity'
+  );
 
 -- 6) Categories trigger + RLS
 DROP TRIGGER IF EXISTS categories_set_updated_at ON public.categories;

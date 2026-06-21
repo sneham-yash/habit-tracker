@@ -16,10 +16,12 @@ export const DEFAULT_BUILD_CATEGORIES: CategoryDefault[] = [
 ];
 
 export const DEFAULT_QUIT_CATEGORIES: CategoryDefault[] = [
-  { name: "Smoking", icon: "cigarette-off", tone: "slate" },
-  { name: "Alcohol", icon: "wine", tone: "rose" },
-  { name: "Junk Food", icon: "hamburger", tone: "amber" },
-  { name: "Social Media", icon: "smartphone", tone: "slate" },
+  { name: "Substance", icon: "cigarette-off", tone: "slate" },
+  { name: "Food & Nutrition", icon: "hamburger", tone: "amber" },
+  { name: "Digital", icon: "smartphone", tone: "slate" },
+  { name: "Financial", icon: "dollar-sign", tone: "emerald" },
+  { name: "Lifestyle", icon: "moon", tone: "violet" },
+  { name: "Mental Wellness", icon: "brain", tone: "violet" },
 ];
 
 const categoryLookup = new Map<string, CategoryDefault>();
@@ -28,10 +30,20 @@ for (const category of [...DEFAULT_BUILD_CATEGORIES, ...DEFAULT_QUIT_CATEGORIES]
   categoryLookup.set(category.name.toLowerCase(), category);
 }
 
-/** Legacy names from first migration → mockup defaults */
+/** Legacy names from earlier migrations → current defaults */
 const LEGACY_NAME_MAP: Record<string, string> = {
   fitness: "Health & Fitness",
-  sugar: "Junk Food",
+  sugar: "Food & Nutrition",
+  smoking: "Substance",
+  alcohol: "Substance",
+  "junk food": "Food & Nutrition",
+  "social media": "Digital",
+  "health & body": "Substance",
+  "digital & screen": "Digital",
+  "spending & money": "Financial",
+  "sleep & energy": "Lifestyle",
+  "mind & mood": "Mental Wellness",
+  "focus & productivity": "Mental Wellness",
 };
 
 export function getCategoryVisuals(

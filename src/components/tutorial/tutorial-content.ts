@@ -25,12 +25,12 @@ export const ONBOARDING_STEPS = [
     description:
       "Categories keep your habits organized and power your Insights — showing where you shine and where small steps help most.",
     bullets: [
-      "Each habit belongs to a build or quit category (Fitness, Mindfulness, Social Media, etc.).",
+      "Each habit belongs to a build or quit category (Health & Fitness, Digital, Substance, etc.).",
       "Default categories are ready to use; add your own under Settings → Manage Categories.",
       "Edit, archive, or delete habits anytime under Settings → Manage Habits.",
     ],
-    buildCategories: ["Fitness", "Mindfulness", "Learning"],
-    quitCategories: ["Social Media", "Sugar", "Junk Food"],
+    buildCategories: ["Health & Fitness", "Mindfulness", "Learning"],
+    quitCategories: ["Digital", "Substance", "Mental Wellness"],
   },
   {
     id: "metrics",

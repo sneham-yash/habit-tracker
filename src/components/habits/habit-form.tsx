@@ -145,7 +145,7 @@ export function HabitForm({
           value={values.name}
           onChange={(e) => updateField("name", e.target.value)}
           placeholder={
-            resolvedType === "build" ? "e.g. Read a book" : "e.g. No smoking"
+            resolvedType === "build" ? "e.g. Read a book" : "e.g. No late-night snacking"
           }
           required
         />
@@ -164,6 +164,11 @@ export function HabitForm({
 
       <div className="space-y-2">
         <Label htmlFor="category">Category</Label>
+        {resolvedType === "quit" ? (
+          <p className="text-muted-foreground text-sm">
+            Group by life area — your habit name describes what you&apos;re quitting.
+          </p>
+        ) : null}
         <Select
           value={values.category_id ?? ""}
           onValueChange={(value) => {
